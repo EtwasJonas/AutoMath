@@ -53,8 +53,8 @@
   #langseg button.on { background: rgba(255,255,255,.25); opacity: 1; font-weight: 600; }
   main.cols {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
     max-width: 1280px;
     margin: 0 auto;
   }
@@ -203,7 +203,7 @@
   #toast.err { background: var(--err); }
   footer { max-width: 1280px; margin: 22px auto 0; color: #9ca3af; font-size: 12.5px; text-align: center; }
   @media (max-width: 940px) {
-    main.cols, .lowcols, .ocrrow { grid-template-columns: 1fr; }
+    .lowcols, .ocrrow { grid-template-columns: 1fr; }
     header { flex-wrap: wrap; }
   }
 </style>
@@ -243,21 +243,6 @@
 
 <main class="cols">
   <section class="card">
-    <h2 data-i18n="editorHead">LaTeX input</h2>
-    <div class="chips" id="palette"></div>
-    <textarea id="tex" spellcheck="false" data-i18n-ph="texPh" placeholder="e.g.  F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt"></textarea>
-    <div id="error" hidden></div>
-    <div class="row">
-      <span class="seg" id="modeSeg">
-        <button id="modeBlock" class="on" data-i18n="modeBlock" data-i18n-title="modeBlockTip" title="Own line, large fractions – standard for slides">Display mode</button>
-        <button id="modeInline" data-i18n="modeInline" data-i18n-title="modeInlineTip" title="Within a line of text">Inline</button>
-      </span>
-      <button class="ghost" id="btnDemo" data-i18n="btnDemo">Load example</button>
-      <button class="ghost" id="btnClear" data-i18n="btnClear">Clear</button>
-    </div>
-  </section>
-
-  <section class="card">
     <h2 data-i18n="previewHead">Preview</h2>
     <div id="preview"><span class="hint" data-i18n="previewHint">Your formula will appear here …</span></div>
     <div class="btns">
@@ -276,6 +261,21 @@
         </button>
       </div>
       <button class="btn" id="btnDl">💾&nbsp; <span data-i18n="btnDl">Download PNG</span> <small data-i18n="btnDlSub">For backups or older Office versions.</small></button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="editorHead">LaTeX input</h2>
+    <div class="chips" id="palette"></div>
+    <textarea id="tex" spellcheck="false" data-i18n-ph="texPh" placeholder="e.g.  F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt"></textarea>
+    <div id="error" hidden></div>
+    <div class="row">
+      <span class="seg" id="modeSeg">
+        <button id="modeBlock" class="on" data-i18n="modeBlock" data-i18n-title="modeBlockTip" title="Own line, large fractions – standard for slides">Display mode</button>
+        <button id="modeInline" data-i18n="modeInline" data-i18n-title="modeInlineTip" title="Within a line of text">Inline</button>
+      </span>
+      <button class="ghost" id="btnDemo" data-i18n="btnDemo">Load example</button>
+      <button class="ghost" id="btnClear" data-i18n="btnClear">Clear</button>
     </div>
   </section>
 </main>

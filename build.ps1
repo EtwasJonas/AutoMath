@@ -13,4 +13,6 @@ $css = $css.Replace("url('Temml.woff2') format('woff2')", "url(data:font/woff2;b
 $html = $html.Replace('/*__TEMML_CSS__*/', $css).Replace('/*__TEMML_JS__*/', $lib)
 
 [IO.File]::WriteAllText("$PWD\AutoMath.html", $html, (New-Object System.Text.UTF8Encoding($false)))
-Write-Host ("AutoMath.html erstellt: " + (Get-Item AutoMath.html).Length + " Bytes")
+# Kopie als index.html, damit GitHub Pages die App direkt unter der Root-URL ausliefert
+[IO.File]::WriteAllText("$PWD\index.html", $html, (New-Object System.Text.UTF8Encoding($false)))
+Write-Host ("AutoMath.html erstellt: " + (Get-Item AutoMath.html).Length + " Bytes (inkl. index.html für GitHub Pages)")
