@@ -351,6 +351,8 @@
       stModelFile: "Loading AI model ({file}): {pct} % · overall {tot} %",
       stModelReady: "Model ready – recognising formula …",
       stRecognising: "Recognising formula … (may take a few seconds on CPU)",
+      stSegment: "Recognising region {i}/{n} …",
+      stMulti: "✓ {n} regions recognised separately and joined – please double-check (the AI reads plain text only unreliably).",
       stDone: "✓ Recognised and inserted into the editor – please double-check!",
       stFailPrefix: "⚠ OCR failed: ",
       stFailSuffix: " – internet needed (first download). Alternative: use OpenMathpix.",
@@ -398,7 +400,7 @@
       helpW3Title: "Way 3 · As an image (fallback)",
       helpW3Body: "<ul><li><b>“Copy PNG”</b> → paste. Scales sharply, but is no longer an editable equation object.</li></ul>",
       helpOcrTitle: "📸 Formulas from scripts / books (OCR)",
-      helpOcrBody: "<ul><li><b>Built in:</b> copy a screenshot (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → press <kbd>Ctrl</kbd>+<kbd>V</kbd> here → recognition starts automatically. Runs locally in the browser (TexTeller3); the first use downloads ~250&nbsp;MB (internet needed), afterwards from cache.</li><li><b>If the AI gives doubtful results</b> (handwriting, long multi-line constructs): <a href=\"https://github.com/JhuoW/OpenMathpix\" target=\"_blank\" rel=\"noopener\">OpenMathpix</a> (offline, free) – the LaTeX lands in your clipboard, just paste it here.</li><li><b>Other alternatives:</b> <a href=\"https://mathpix.com\" target=\"_blank\" rel=\"noopener\">Mathpix Snip</a> (very accurate, freemium), <a href=\"https://mathcheap.xyz\" target=\"_blank\" rel=\"noopener\">mathcheap.xyz</a>, <a href=\"https://imagetolatex.com\" target=\"_blank\" rel=\"noopener\">imagetolatex.com</a> (web).</li><li>Tip: pasted LaTeX with <code>$…$</code>/<code>$$…$$</code> is cleaned automatically.</li></ul>",
+      helpOcrBody: "<ul><li><b>Built in:</b> copy a screenshot (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → press <kbd>Ctrl</kbd>+<kbd>V</kbd> here → recognition starts automatically. Runs locally in the browser (TexTeller3); the first use downloads ~250&nbsp;MB (internet needed), afterwards from cache.</li><li><b>Text + formula in one screenshot:</b> the image is split into regions and each is recognised on its own – formulas come out well this way, plain text only unreliably (edit the text part if needed).</li><li><b>If the AI gives doubtful results</b> (handwriting, long multi-line constructs): <a href=\"https://github.com/JhuoW/OpenMathpix\" target=\"_blank\" rel=\"noopener\">OpenMathpix</a> (offline, free) – the LaTeX lands in your clipboard, just paste it here.</li><li><b>Other alternatives:</b> <a href=\"https://mathpix.com\" target=\"_blank\" rel=\"noopener\">Mathpix Snip</a> (very accurate, freemium), <a href=\"https://mathcheap.xyz\" target=\"_blank\" rel=\"noopener\">mathcheap.xyz</a>, <a href=\"https://imagetolatex.com\" target=\"_blank\" rel=\"noopener\">imagetolatex.com</a> (web).</li><li>Tip: pasted LaTeX with <code>$…$</code>/<code>$$…$$</code> is cleaned automatically.</li></ul>",
       helpPrivTitle: "🔒 Privacy & offline",
       helpPrivBody: "<ul><li>AutoMath runs entirely locally in your browser – no server, no uploads. Formulas, history and the OCR model stay on this PC.</li></ul>",
       footer: "AutoMath v3 · single HTML file · equations offline, OCR in the browser (TexTeller3, Apache-2.0) · rendering with Temml (MathML)",
@@ -431,6 +433,8 @@
       stModelFile: "Lade KI-Modell ({file}): {pct} % · gesamt {tot} %",
       stModelReady: "Modell bereit – Formel wird erkannt …",
       stRecognising: "Formel wird erkannt … (auf der CPU kann das einige Sekunden dauern)",
+      stSegment: "Erkenne Bereich {i}/{n} …",
+      stMulti: "✓ {n} Bereiche getrennt erkannt und zusammengefügt – bitte prüfen (Fließtext liest die KI nur unzuverlässig).",
       stDone: "✓ Erkannt und in den Editor übernommen – bitte kurz prüfen!",
       stFailPrefix: "⚠ OCR fehlgeschlagen: ",
       stFailSuffix: " – Internet nötig (erster Download). Alternativ: OpenMathpix nutzen.",
@@ -478,7 +482,7 @@
       helpW3Title: "Weg 3 · Als Bild (Fallback)",
       helpW3Body: "<ul><li><b>„PNG kopieren“</b> → einfügen. Skaliert scharf, ist aber kein editierbares Formelobjekt mehr.</li></ul>",
       helpOcrTitle: "📸 Formeln aus Skript / Buch (OCR)",
-      helpOcrBody: "<ul><li><b>Integriert:</b> Screenshot kopieren (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → hier <kbd>Strg</kbd>+<kbd>V</kbd> → Erkennung startet automatisch. Läuft lokal im Browser (TexTeller3); beim ersten Mal lädt er ~250&nbsp;MB Modell (Internet nötig), danach aus dem Cache.</li><li><b>Falls die KI zweifelhafte Ergebnisse liefert</b> (Handschrift, lange mehrzeilige Konstrukte): <a href=\"https://github.com/JhuoW/OpenMathpix\" target=\"_blank\" rel=\"noopener\">OpenMathpix</a> (offline, gratis) – das LaTeX landet in der Zwischenablage, hier einfach einfügen.</li><li><b>Weitere Alternativen:</b> <a href=\"https://mathpix.com\" target=\"_blank\" rel=\"noopener\">Mathpix Snip</a> (sehr genau, Freemium), <a href=\"https://mathcheap.xyz\" target=\"_blank\" rel=\"noopener\">mathcheap.xyz</a>, <a href=\"https://imagetolatex.com\" target=\"_blank\" rel=\"noopener\">imagetolatex.com</a> (Web).</li><li>Tipp: Eingefügtes LaTeX mit <code>$…$</code>/<code>$$…$$</code> wird automatisch bereinigt.</li></ul>",
+      helpOcrBody: "<ul><li><b>Integriert:</b> Screenshot kopieren (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → hier <kbd>Strg</kbd>+<kbd>V</kbd> → Erkennung startet automatisch. Läuft lokal im Browser (TexTeller3); beim ersten Mal lädt er ~250&nbsp;MB Modell (Internet nötig), danach aus dem Cache.</li><li><b>Text + Formel in einem Screenshot:</b> Das Bild wird in Bereiche getrennt und jeder Bereich einzeln erkannt – Formeln gelingen so zuverlässig, Fließtext nur eingeschränkt (Textteil ggf. von Hand anpassen).</li><li><b>Falls die KI zweifelhafte Ergebnisse liefert</b> (Handschrift, lange mehrzeilige Konstrukte): <a href=\"https://github.com/JhuoW/OpenMathpix\" target=\"_blank\" rel=\"noopener\">OpenMathpix</a> (offline, gratis) – das LaTeX landet in der Zwischenablage, hier einfach einfügen.</li><li><b>Weitere Alternativen:</b> <a href=\"https://mathpix.com\" target=\"_blank\" rel=\"noopener\">Mathpix Snip</a> (sehr genau, Freemium), <a href=\"https://mathcheap.xyz\" target=\"_blank\" rel=\"noopener\">mathcheap.xyz</a>, <a href=\"https://imagetolatex.com\" target=\"_blank\" rel=\"noopener\">imagetolatex.com</a> (Web).</li><li>Tipp: Eingefügtes LaTeX mit <code>$…$</code>/<code>$$…$$</code> wird automatisch bereinigt.</li></ul>",
       helpPrivTitle: "🔒 Datenschutz & Offline",
       helpPrivBody: "<ul><li>AutoMath läuft komplett lokal im Browser – kein Server, keine Übertragung. Formeln, Verlauf und OCR-Modell bleiben auf diesem PC.</li></ul>",
       footer: "AutoMath v3 · einzelne HTML-Datei · Formeln offline, OCR im Browser (TexTeller3, Apache-2.0) · Rendering mit Temml (MathML)",
@@ -895,7 +899,7 @@
   /* ---------- OCR (Screenshot → LaTeX) ---------- */
   const OCR_MODEL = "onnx-community/TexTeller3-ONNX";
   const TJS_CDN = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2";
-  let tjsMod = null, ocrPipe = null, ocrBusy = false, ocrGpu = false;
+  let tjsMod = null, ocrPipe = null, ocrBusy = false, ocrGpu = false, ocrSegCount = 1;
   let pendingImage = null, pendingThumbUrl = null;
 
   const dropEl = $("#dropzone"), thumbEl = $("#thumb"), thumbHintEl = $("#thumbhint");
@@ -991,7 +995,7 @@
     return out;
   }
 
-  // Bild vorbereiten: weißer Hintergrund, Inhalt zuschneiden, optional Quadrat auffüllen → Canvas
+  // Bild zuschneiden (weißer Hintergrund, Inhalt beschneiden) → Canvas
   function prepareCanvas(file, padToSquare, autoCrop) {
     if (autoCrop === undefined) autoCrop = true;
     return new Promise((resolve, reject) => {
@@ -1000,29 +1004,69 @@
       img.onload = () => {
         URL.revokeObjectURL(url);
         if (!img.width || !img.height) { reject(new Error(t("errEmptyImage"))); return; }
-        const cw = padToSquare ? Math.max(img.width, img.height) : img.width;
-        const ch = padToSquare ? Math.max(img.width, img.height) : img.height;
         const cv = document.createElement("canvas");
-        cv.width = cw; cv.height = ch;
+        cv.width = img.width; cv.height = img.height;
         const ctx = cv.getContext("2d", { willReadFrequently: true });
         ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, cw, ch);
-        ctx.drawImage(img, Math.round((cw - img.width) / 2), Math.round((ch - img.height) / 2));
+        ctx.fillRect(0, 0, cv.width, cv.height);
+        ctx.drawImage(img, 0, 0);
         let out = autoCrop ? cropToInk(cv) : cv;
-        if (padToSquare && (out.width !== out.height)) {
-          const s = Math.max(out.width, out.height);
-          const sq = document.createElement("canvas");
-          sq.width = s; sq.height = s;
-          const sctx = sq.getContext("2d", { willReadFrequently: true });
-          sctx.fillStyle = "#ffffff";
-          sctx.fillRect(0, 0, s, s);
-          sctx.drawImage(out, Math.round((s - out.width) / 2), Math.round((s - out.height) / 2));
-          out = sq;
-        }
+        if (padToSquare && (out.width !== out.height)) out = padSquare(out);
         resolve(out);
       };
       img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(t("errImageRead"))); };
       img.src = url;
+    });
+  }
+
+  // Auf Quadrat auffüllen (seitenverhältnistreu, wie das Modell trainiert wurde)
+  function padSquare(cv) {
+    if (cv.width === cv.height) return cv;
+    const s = Math.max(cv.width, cv.height);
+    const sq = document.createElement("canvas");
+    sq.width = s; sq.height = s;
+    const sctx = sq.getContext("2d", { willReadFrequently: true });
+    sctx.fillStyle = "#ffffff";
+    sctx.fillRect(0, 0, s, s);
+    sctx.drawImage(cv, Math.round((s - cv.width) / 2), Math.round((s - cv.height) / 2));
+    return sq;
+  }
+
+  // Bild an großen horizontalen Lücken in Bereiche trennen (z. B. Text | Formel)
+  function splitIntoSegments(cv, maxSegments) {
+    if (maxSegments === undefined) maxSegments = 4;
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    const w = cv.width, h = cv.height;
+    if (!w || !h) return [cv];
+    const { data } = ctx.getImageData(0, 0, w, h);
+    const colInk = new Uint8Array(w);
+    for (let x = 0; x < w; x++) {
+      for (let y = 0; y < h; y++) {
+        const i = (y * w + x) * 4;
+        if (data[i + 3] > 20 && data[i] < 200) { colInk[x] = 1; break; }
+      }
+    }
+    const runs = [];
+    let start = -1;
+    for (let x = 0; x <= w; x++) {
+      const ink = x < w && colInk[x];
+      if (ink && start < 0) start = x;
+      if (!ink && start >= 0) { runs.push([start, x - 1]); start = -1; }
+    }
+    if (!runs.length) return [cv];
+    const minGap = Math.max(8, Math.round(h * 0.3));
+    const merged = [];
+    for (const r of runs) {
+      const last = merged[merged.length - 1];
+      if (last && r[0] - last[1] - 1 < minGap) last[1] = r[1];
+      else merged.push([r[0], r[1]]);
+    }
+    if (merged.length <= 1) return [cv];
+    return merged.slice(0, maxSegments).map(([a, b]) => {
+      const seg = document.createElement("canvas");
+      seg.width = b - a + 1; seg.height = h;
+      seg.getContext("2d").drawImage(cv, a, 0, seg.width, h, 0, 0, seg.width, h);
+      return seg;
     });
   }
 
@@ -1088,18 +1132,57 @@
     return ocrPipe;
   }
 
-  async function recognizeImage(file, padToSquare, genOpts) {
+  // Wiederholungsschleifen des Decoders zusammenfalten (z. B. "\leq|a|" × 40)
+  function collapseRepeats(s) {
+    for (let ul = 48; ul >= 5; ul--) {
+      if (s.length < ul * 3) continue;
+      const unit = s.slice(s.length - ul);
+      let k = 1;
+      while (s.length >= (k + 1) * ul &&
+             s.slice(s.length - (k + 1) * ul, s.length - k * ul) === unit) k++;
+      if (k >= 3) return collapseRepeats(s.slice(0, s.length - (k - 1) * ul).trimEnd());
+    }
+    return s;
+  }
+
+  // Übliche OCR-Artefakte aufräumen
+  function repairTex(s) {
+    s = s.replace(/\\mathit\{([^{}]*)\}/g, "\\text{$1}");   // \mathit{Text} → \text{Text}
+    s = s.replace(/\\text\}(?!\{)/g, "");                    // verwaistes \text} entfernen
+    s = s.replace(/^(?:\\\\|\\\[|\\\(|\$\$)+/, "");          // einsame Begrenzer am Anfang
+    s = s.replace(/^\[(?=\\)/, "");                          // einsame [ vor \befehl
+    s = s.replace(/(?:\\\\|\\\]|\\\)|\$\$)+$/, "");          // … und am Ende
+    return s.trim();
+  }
+
+  async function recognizeCanvas(cv, genOpts) {
     const pipe = await ensureOcrPipe();
-    const cv = await prepareCanvas(file, padToSquare);
     const raw = canvasToRawGray(cv);
     setOcrStatus(t("stRecognising"));
     const out = await pipe(raw, Object.assign({ max_new_tokens: 512 }, genOpts || {}));
     let text = out && out[0] && out[0].generated_text ? out[0].generated_text.trim() : "";
-    if (!text) throw new Error(t("errNoText"));
-    text = text.replace(/(?:\s*\.\.\.)+\s*$/, ""); // "..."-Halluzinationen am Ende entfernen
-    text = text.replace(/\\boldsymbol\{(\(|\))\}/g, "$1"); // Kosmetik: \boldsymbol um Klammern entfernen
+    text = collapseRepeats(text);
+    text = repairTex(text);
     if (!text) throw new Error(t("errNoText"));
     return stripDelims(text);
+  }
+
+  async function recognizeImage(file, padToSquare, genOpts) {
+    const cv = await prepareCanvas(file, false); // erst nur zuschneiden
+    // Sehr breite Bilder (z. B. Text + Formel): Bereiche trennen und einzeln erkennen,
+    // damit ein problematischer Bereich (Fließtext) die Formel nicht kippt.
+    const segs = (cv.width / cv.height > 6) ? splitIntoSegments(cv) : [cv];
+    if (segs.length > 1) {
+      const parts = [];
+      for (let i = 0; i < segs.length; i++) {
+        setOcrStatus(fmt(t("stSegment"), { i: i + 1, n: segs.length }));
+        parts.push(await recognizeCanvas(padSquare(segs[i]), Object.assign({ max_new_tokens: 192 }, genOpts || {})));
+      }
+      ocrSegCount = segs.length;
+      return parts.join(" ");
+    }
+    ocrSegCount = 1;
+    return recognizeCanvas(padToSquare ? padSquare(cv) : cv, genOpts);
   }
 
   async function runOcr() {
@@ -1110,8 +1193,8 @@
       const tex = await recognizeImage(pendingImage, true);
       ocrResultEl.hidden = false;
       ocrResultEl.textContent = tex;
-      insertAtCursor(tex, !texEl.value.trim());
-      setOcrStatus(t("stDone"));
+      insertAtCursor(tex, true); // neues Bild ersetzt den Editor-Inhalt immer
+      setOcrStatus(ocrSegCount > 1 ? fmt(t("stMulti"), { n: ocrSegCount }) : t("stDone"));
       toast(t("toastRecognised"));
     } catch (err) {
       setOcrStatus(t("stFailPrefix") + (err && err.message ? err.message : err) + t("stFailSuffix"), true);
