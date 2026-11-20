@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoMath – Formel-Werkstatt für PowerPoint</title>
+<style>/*__TEMML_CSS__*/</style>
+<style>
+  :root {
+    --bg: #f4f5fa;
+    --card: #ffffff;
+    --ink: #1c2333;
+    --muted: #6b7280;
+    --line: #e5e7f0;
+    --accent: #4f46e5;
+    --accent-dark: #4338ca;
+    --go: #0d9488;
+    --go-dark: #0f766e;
+    --err: #b91c1c;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    padding: 0 16px 40px;
+  }
+  header {
+    background: linear-gradient(120deg, #312e81, #4f46e5 55%, #6d28d9);
+    color: #fff;
+    margin: 0 -16px 18px;
+    padding: 22px 28px 20px;
+  }
+  header h1 { margin: 0; font-size: 22px; letter-spacing: .2px; }
+  header p { margin: 4px 0 0; opacity: .85; font-size: 14px; }
+  header kbd {
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+    border-radius: 5px; padding: 0 5px; font-size: 12px; font-family: inherit;
+  }
+  main.cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 16px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(20, 24, 60, .05);
+  }
+  .card h2 {
+    margin: 0 0 10px; font-size: 13px; text-transform: uppercase;
+    letter-spacing: .8px; color: var(--muted); font-weight: 600;
+  }
+  /* ------- Editor ------- */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip {
+    border: 1px solid var(--line); background: #fafbfe; color: var(--ink);
+    border-radius: 8px; padding: 3px 9px; font-size: 13px; cursor: pointer;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); background: #f3f2ff; }
+  #tex {
+    width: 100%; min-height: 190px; resize: vertical;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 14.5px; line-height: 1.5;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    padding: 12px; color: var(--ink); background: #fbfcff;
+    outline: none;
+  }
+  #tex:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+  .seg button {
+    border: 0; background: #fff; padding: 7px 13px; font-size: 13px; cursor: pointer; color: var(--muted);
+  }
+  .seg button.on { background: var(--accent); color: #fff; }
+  .ghost {
+    border: 1px solid var(--line); background: #fff; border-radius: 9px;
+    padding: 7px 13px; font-size: 13px; cursor: pointer; color: var(--ink);
+  }
+  .ghost:hover { border-color: var(--accent); color: var(--accent); }
+  #error {
+    margin-top: 10px; color: var(--err); background: #fef2f2;
+    border: 1px solid #fecaca; border-radius: 9px; padding: 8px 12px; font-size: 13px;
+  }
+  /* ------- Preview ------- */
+  #preview {
+    min-height: 150px; border: 1.5px dashed var(--line); border-radius: 10px;
+    background: #fdfdff; display: flex; align-items: center; justify-content: center;
+    padding: 26px 18px; overflow-x: auto;
+  }
+  #preview .hint { color: #9ca3af; font-size: 14px; }
+  #preview math { font-size: 1.75em; }
+  .btns { display: grid; gap: 8px; margin-top: 14px; }
+  .btn {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+    border: 1px solid var(--line); border-radius: 10px; background: #fff;
+    padding: 10px 14px; cursor: pointer; text-align: left; width: 100%;
+    font-size: 14px; color: var(--ink);
+  }
+  .btn small { color: var(--muted); font-size: 12px; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.main {
+    background: linear-gradient(120deg, var(--go), var(--go-dark));
+    border-color: var(--go-dark); color: #fff;
+  }
+  .btn.main small { color: rgba(255,255,255,.85); }
+  .btn.main:hover { filter: brightness(1.06); }
+  .btnrow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* ------- OCR ------- */
+  .ocrwrap { max-width: 1280px; margin: 16px auto 0; }
+  .ocrrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 14px; }
+  #dropzone {
+    border: 2px dashed var(--line); border-radius: 10px; background: #fbfcff;
+    min-height: 150px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 10px; text-align: center;
+  }
+  #dropzone.drag { border-color: var(--accent); background: #f3f2ff; }
+  #dropzone img { max-width: 100%; max-height: 220px; border-radius: 6px; }
+  #thumbhint { color: #9ca3af; font-size: 13.5px; padding: 10px; }
+  #btnOcr { border: 0; background: var(--accent); color: #fff; border-radius: 10px;
+    padding: 10px 16px; font-size: 14.5px; cursor: pointer; }
+  #btnOcr:hover { background: var(--accent-dark); }
+  #btnOcr:disabled { background: #b9b6f5; cursor: wait; }
+  .ocrstatus { margin-top: 10px; font-size: 13.5px; color: var(--muted); }
+  .ocrstatus.err { color: var(--err); }
+  .ocrbar { margin-top: 6px; height: 8px; background: #eceef7; border-radius: 99px; overflow: hidden; }
+  .ocrbar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #8b5cf6); transition: width .3s; }
+  .ocrresult {
+    margin-top: 10px; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    background: #f4f5fb; border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 12px; font-size: 13px; word-break: break-all; color: var(--ink);
+  }
+  .ocrnote { margin-top: 12px; color: var(--muted); font-size: 12.5px; }
+  .filelabel { position: relative; overflow: hidden; display: inline-block; }
+  /* ------- Bibliothek ------- */
+  .libwrap, .lowwrap { max-width: 1280px; margin: 16px auto 0; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tabs button {
+    border: 1px solid var(--line); background: #fff; border-radius: 999px;
+    padding: 6px 14px; font-size: 13px; cursor: pointer; color: var(--muted);
+  }
+  .tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .libgrid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 8px;
+  }
+  .libitem {
+    display: flex; flex-direction: column; gap: 6px; align-items: center;
+    border: 1px solid var(--line); border-radius: 10px; background: #fbfcff;
+    padding: 12px 10px 8px; cursor: pointer; min-height: 74px; justify-content: center;
+  }
+  .libitem:hover { border-color: var(--accent); background: #f5f4ff; }
+  .libitem .m { font-size: 1.05em; max-width: 100%; overflow: hidden; }
+  .libitem .n { font-size: 11.5px; color: var(--muted); }
+  /* ------- Verlauf & Hilfe ------- */
+  .lowcols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; }
+  #histlist { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
+  .hitem {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px; cursor: pointer;
+    background: #fbfcff;
+  }
+  .hitem:hover { border-color: var(--accent); }
+  .hitem .m { flex: 1; overflow: hidden; max-height: 2.6em; font-size: 1.05em; }
+  .hitem time { color: #9ca3af; font-size: 11.5px; white-space: nowrap; }
+  .hitem .del { border: 0; background: none; color: #9ca3af; cursor: pointer; font-size: 15px; }
+  .hitem .del:hover { color: var(--err); }
+  details { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: #fbfcff; margin-top: 8px; }
+  details:first-of-type { margin-top: 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+  details ol, details ul { margin: 8px 0 6px; padding-left: 22px; }
+  details li { margin: 4px 0; }
+  details code {
+    background: #eef0fa; border-radius: 4px; padding: 1px 5px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12.5px;
+  }
+  details a { color: var(--accent); }
+  /* ------- Toast ------- */
+  #toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+    background: #111827; color: #fff; border-radius: 10px; padding: 10px 18px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: all .25s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,.25); max-width: 90vw; text-align: center; z-index: 50;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.err { background: var(--err); }
+  footer { max-width: 1280px; margin: 22px auto 0; color: #9ca3af; font-size: 12.5px; text-align: center; }
+  @media (max-width: 940px) {
+    main.cols, .lowcols { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>📐 AutoMath – Formel-Werkstatt</h1>
+  <p>Screenshot einfügen (<kbd>Strg</kbd>+<kbd>V</kbd>) oder LaTeX tippen → Live-Vorschau → <kbd>Strg</kbd>+<kbd>V</kbd> in PowerPoint als <b>native, editierbare Formel</b>.</p>
+</header>
+
+<main class="cols">
+  <section class="card">
+    <h2>LaTeX-Eingabe</h2>
+    <div class="chips" id="palette"></div>
+    <textarea id="tex" spellcheck="false" placeholder="z. B.  F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt"></textarea>
+    <div id="error" hidden></div>
+    <div class="row">
+      <span class="seg" id="modeSeg">
+        <button id="modeBlock" class="on" title="Eigene Zeile, große Brüche – Standard für Folien">Anzeigeformel</button>
+        <button id="modeInline" title="Innerhalb einer Textzeile">Inline</button>
+      </span>
+      <button class="ghost" id="btnDemo">Beispiel laden</button>
+      <button class="ghost" id="btnClear">Leeren</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Vorschau</h2>
+    <div id="preview"><span class="hint">Hier erscheint deine Formel …</span></div>
+    <div class="btns">
+      <button class="btn main" id="btnMml" title="Strg+Enter">
+        📋&nbsp; Für PowerPoint kopieren (native Formel)
+        <small>Nach dem Kopieren: auf der Folie Strg + V – es entsteht eine editierbare Office-Formel.</small>
+      </button>
+      <div class="btnrow">
+        <button class="btn" id="btnTex">
+          📝&nbsp; LaTeX mit $$ … $$ kopieren
+          <small>Neuere M365-Builds fügen das direkt als Formel ein.</small>
+        </button>
+        <button class="btn" id="btnPng">
+          🖼️&nbsp; PNG kopieren (Bild)
+          <small>Fallback: sieht wie gesetztes LaTeX aus, aber nicht editierbar.</small>
+        </button>
+      </div>
+      <button class="btn" id="btnDl">💾&nbsp; PNG herunterladen <small>Für Sicherungskopien oder alte Office-Versionen.</small></button>
+    </div>
+  </section>
+</main>
+
+<section class="card ocrwrap">
+  <h2>📸 Screenshot → Formel (OCR, läuft im Browser)</h2>
+  <div class="ocrrow">
+    <div id="dropzone" title="Klicken oder Bild hierher ziehen">
+      <span id="thumbhint">Screenshot mit <b>Strg + V</b> einfügen – oder hier klicken und eine Bilddatei wählen.<br>Formel möglichst eng umrahmen, mit etwas weißem Rand.</span>
+      <img id="thumb" alt="" hidden>
+    </div>
+    <input type="file" id="ocrFile" accept="image/*" hidden>
+    <div>
+      <div class="row" style="margin-top:0">
+        <button id="btnOcr" disabled title="Bild wird erkannt">🔎&nbsp; Formel erkennen</button>
+        <button class="ghost" id="btnOcrClear" hidden>Bild entfernen</button>
+      </div>
+      <div id="ocrStatus" class="ocrstatus" hidden></div>
+      <div id="ocrBar" class="ocrbar" hidden><div id="ocrBarFill"></div></div>
+      <div id="ocrResult" class="ocrresult" hidden></div>
+      <div class="ocrnote">Erkennung mit der KI <b>TexTeller3</b> (Apache-2.0), direkt lokal im Browser. Erstmalig ~250&nbsp;MB Modell-Download, danach aus dem Browser-Cache – dafür braucht es beim ersten Mal Internet. Ergebnis immer kurz gegen das Original prüfen.</div>
+    </div>
+  </div>
+</section>
+
+<section class="card libwrap">
+  <h2>📚 Formelbibliothek (Elektrotechnik)</h2>
+  <div class="tabs" id="libTabs"></div>
+  <div class="libgrid" id="libGrid"></div>
+</section>
+
+<div class="lowwrap lowcols">
+  <section class="card">
+    <h2>🕘 Verlauf</h2>
+    <div id="histlist"></div>
+    <div class="row"><button class="ghost" id="btnHistClear">Verlauf leeren</button></div>
+  </section>
+
+  <section class="card">
+    <h2>❓ So kommt die Formel in PowerPoint</h2>
+    <details open>
+      <summary>Weg 1 · Native Formel (empfohlen)</summary>
+      <ol>
+        <li>Hier <b>„Für PowerPoint kopieren“</b> klicken (kopiert MathML).</li>
+        <li>In PowerPoint <kbd>Strg</kbd>+<kbd>V</kbd> auf die Folie → es entsteht eine <b>echte, editierbare Formel</b>.</li>
+        <li>Falls es als Text landet: <i>Start → Einfügen → Inhalte einfügen → MathML</i>.</li>
+      </ol>
+    </details>
+    <details>
+      <summary>Weg 2 · LaTeX direkt (Microsoft 365)</summary>
+      <ul>
+        <li><b>„LaTeX mit $$ … $$ kopieren“</b> → in PowerPoint einfügen: neuere M365-Builds wandeln das automatisch in eine Formel um.</li>
+        <li>Oder in PowerPoint: <kbd>Alt</kbd>+<kbd>=</kbd> → im Formel-Menüband von <i>Unicode</i> auf <i>{}LaTeX</i> umstellen → Code einfügen → <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>=</kbd> (Konvertieren).</li>
+      </ul>
+    </details>
+    <details>
+      <summary>Weg 3 · Als Bild (Fallback)</summary>
+      <ul><li><b>„PNG kopieren“</b> → einfügen. Skaliert scharf, ist aber kein editierbares Formelobjekt mehr.</li></ul>
+    </details>
+    <details>
+      <summary>📸 Formeln aus Skript / Buch (OCR)</summary>
+      <ul>
+        <li><b>Integriert:</b> Screenshot kopieren (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → hier <kbd>Strg</kbd>+<kbd>V</kbd> → „Formel erkennen". Läuft lokal im Browser (TexTeller3); beim ersten Mal lädt er ~250&nbsp;MB Modell (Internet nötig), danach aus dem Cache.</li>
+        <li><b>Falls die KI zweifelhafte Ergebnisse liefert</b> (Handschrift, lange mehrzeilige Konstrukte): <a href="https://github.com/JhuoW/OpenMathpix" target="_blank" rel="noopener">OpenMathpix</a> (offline, gratis) – LaTeX landet in der Zwischenablage, hier einfach einfügen.</li>
+        <li><b>Weitere Alternativen:</b> <a href="https://mathpix.com" target="_blank" rel="noopener">Mathpix Snip</a> (sehr genau, Freemium), <a href="https://mathcheap.xyz" target="_blank" rel="noopener">mathcheap.xyz</a>, <a href="https://imagetolatex.com" target="_blank" rel="noopener">imagetolatex.com</a> (Web).</li>
+        <li>Tipp: Eingefügtes LaTeX mit <code>$…$</code>/<code>$$…$$</code> wird automatisch bereinigt.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>🔒 Datenschutz &amp; Offline</summary>
+      <ul><li>AutoMath läuft komplett lokal im Browser – kein Server, keine Übertragung. Formel und Verlauf bleiben auf diesem PC gespeichert.</li></ul>
+    </details>
+  </section>
+</div>
+
+<footer>AutoMath v2 · einzelne HTML-Datei · Formeln offline, OCR im Browser (TexTeller3, Apache-2.0) · Rendering mit Temml (MathML)</footer>
+
+<div id="toast"></div>
+
+<script>/*__TEMML_JS__*/</script>
+<script>
+"use strict";
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const texEl = $("#tex"), previewEl = $("#preview"), errEl = $("#error"), toastEl = $("#toast");
+  const S = { mml: "", tex: "", display: true };
+
+  /* ---------- Helpers ---------- */
+  function stripDelims(t) {
+    t = t.trim();
+    let m;
+    if ((m = t.match(/^\$\$([\s\S]*)\$\$$/)) || (m = t.match(/^\\\[([\s\S]*)\\\]$/))) return m[1].trim();
+    if ((m = t.match(/^\$([\s\S]*)\$$/)) || (m = t.match(/^\\\(([\s\S]*)\\\)$/))) return m[1].trim();
+    return t;
+  }
+  function renderToString(tex, display) {
+    return temml.renderToString(tex, { displayMode: display, xml: true, throwOnError: true });
+  }
+  function sanitizeMml(mml, display) {
+    return mml.replace(/<([a-zA-Z]+)([^>]*)>/g, (m0, tag, attrs) => {
+      let a = attrs
+        .replace(/\sclass\s*=\s*"[^"]*"/g, "")
+        .replace(/\sstyle\s*=\s*"[^"]*"/g, "");
+      if (tag === "math") {
+        if (!/\sxmlns\s*=/.test(a)) a += ' xmlns="http://www.w3.org/1998/Math/MathML"';
+        if (display && !/\sdisplay\s*=/.test(a)) a += ' display="block"';
+      }
+      return "<" + tag + a + ">";
+    });
+  }
+
+  /* ---------- Preview ---------- */
+  function render() {
+    const tex = stripDelims(texEl.value);
+    S.tex = tex;
+    if (!tex) {
+      previewEl.innerHTML = '<span class="hint">Hier erscheint deine Formel …</span>';
+      errEl.hidden = true; S.mml = ""; return;
+    }
+    try {
+      const raw = renderToString(tex, S.display);
+      S.mml = sanitizeMml(raw, S.display);
+      previewEl.innerHTML = raw;          // Vorschau mit CSS-Klassen
+      errEl.hidden = true;
+    } catch (e) {
+      errEl.textContent = "⚠ LaTeX-Fehler: " + (e && e.message ? e.message : e);
+      errEl.hidden = false;
+    }
+  }
+  let deb;
+  texEl.addEventListener("input", () => {
+    clearTimeout(deb);
+    deb = setTimeout(() => { render(); saveCurrent(); }, 120);
+  });
+
+  /* ---------- Clipboard ---------- */
+  async function copyText(text, msg) {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast(msg);
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e2) {}
+      ta.remove();
+      toast(ok ? msg : "Kopieren fehlgeschlagen – bitte Text manuell markieren.", ok);
+    }
+  }
+  async function copyPngBlob() {
+    if (!S.mml) throw new Error("Keine Formel vorhanden");
+    const node = previewEl.querySelector("math");
+    if (!node) throw new Error("Keine Formel vorhanden");
+    const box = node.getBoundingClientRect();
+    const scale = 3, pad = 6 * scale;
+    const w = Math.ceil(box.width * scale) + 2 * pad, h = Math.ceil(box.height * scale) + 2 * pad;
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '">' +
+      '<foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml"' +
+      ' style="margin:' + pad + 'px;font-size:' + (20 * scale) + 'px;color:#000;">' +
+      S.mml + "</div></foreignObject></svg>";
+    const img = new Image();
+    await new Promise((res, rej) => {
+      img.onload = res; img.onerror = () => rej(new Error("PNG-Rendering fehlgeschlagen"));
+      img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    });
+    const cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const blob = await new Promise((res) => cv.toBlob(res, "image/png"));
+    if (!blob) throw new Error("PNG-Erzeugung fehlgeschlagen");
+    return blob;
+  }
+
+  /* ---------- Buttons ---------- */
+  async function afterCopy() { if (S.tex) addHistory(S.tex, S.display); }
+  $("#btnMml").addEventListener("click", async () => {
+    if (!S.mml) return toast("Erst eine Formel eingeben.", false);
+    await copyText(S.mml, "✓ Native Formel kopiert – jetzt in PowerPoint Strg + V drücken.");
+    afterCopy();
+  });
+  $("#btnTex").addEventListener("click", async () => {
+    if (!S.tex) return toast("Erst eine Formel eingeben.", false);
+    await copyText("$$" + S.tex + "$$", "✓ LaTeX ($$ … $$) kopiert – in PowerPoint einfügen.");
+    afterCopy();
+  });
+  $("#btnPng").addEventListener("click", async () => {
+    try {
+      const blob = await copyPngBlob();
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        toast("✓ PNG in die Zwischenablage kopiert.");
+      } else {
+        downloadPng(blob);
+        toast("PNG heruntergeladen (Zwischenablage wird nicht unterstützt).");
+      }
+      afterCopy();
+    } catch (e) { toast("PNG fehlgeschlagen: " + (e && e.message ? e.message : e), false); }
+  });
+  $("#btnDl").addEventListener("click", async () => {
+    try { downloadPng(await copyPngBlob()); toast("✓ PNG heruntergeladen."); }
+    catch (e) { toast("Download fehlgeschlagen: " + (e && e.message ? e.message : e), false); }
+  });
+  function downloadPng(blob) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "formel.png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "Enter") { e.preventDefault(); $("#btnMml").click(); }
+  });
+
+  /* ---------- Modus / Beispiel / Leeren ---------- */
+  function setMode(display) {
+    S.display = display;
+    $("#modeBlock").classList.toggle("on", display);
+    $("#modeInline").classList.toggle("on", !display);
+    render(); saveCurrent();
+  }
+  $("#modeBlock").addEventListener("click", () => setMode(true));
+  $("#modeInline").addEventListener("click", () => setMode(false));
+  $("#btnDemo").addEventListener("click", () => {
+    texEl.value = DEMO; render(); saveCurrent();
+  });
+  $("#btnClear").addEventListener("click", () => {
+    texEl.value = ""; render(); saveCurrent(); texEl.focus();
+  });
+
+  /* ---------- Einfügen ---------- */
+  function insertAtCursor(text, replaceAll) {
+    if (replaceAll) { texEl.value = text; }
+    else {
+      const a = texEl.selectionStart, b = texEl.selectionEnd;
+      texEl.value = texEl.value.slice(0, a) + text + texEl.value.slice(b);
+      let caret = a + text.length;
+      const brace = text.indexOf("{}");
+      if (brace >= 0) caret = a + brace + 1;
+      texEl.setSelectionRange(caret, caret);
+    }
+    texEl.focus();
+    render(); saveCurrent();
+  }
+
+  /* ---------- Zeichen-Palette ---------- */
+  const PALETTE = [
+    "\\frac{}{}", "\\sqrt{}", "_{}", "^{}", "\\int_{}^{} ", "\\sum_{}^{}",
+    "\\lim_{} ", "\\vec{}", "\\underline{}", "\\overline{}", "\\hat{}", "\\dot{}",
+    "\\ddot{}", "\\mathcal{L}", "\\varepsilon(t)", "\\left( \\right)",
+    "e^{j} ", "\\omega", "\\varphi", "\\pi", "\\tau", "\\Omega", "\\mu", "\\infty",
+    "\\cdot", "\\pm", "\\Rightarrow", "\\quad", "\\,", "\\text{}"
+  ];
+  const pal = $("#palette");
+  PALETTE.forEach((tok) => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = tok;
+    b.title = "Einfügen: " + tok;
+    b.addEventListener("click", () => insertAtCursor(tok, false));
+    pal.appendChild(b);
+  });
+
+  /* ---------- Formelbibliothek ---------- */
+  const LIB = [
+    { tab: "Grundlagen", items: [
+      ["Ohmsches Gesetz", "R = \\frac{U}{I}"],
+      ["Leistung", "P = U \\cdot I = \\frac{U^{2}}{R}"],
+      ["Arbeit / Energie", "W = \\int_{t_1}^{t_2} p(t)\\,dt"],
+      ["Knotensatz", "\\sum_{k} i_{k}(t) = 0"],
+      ["Maschensatz", "\\sum_{k} u_{k}(t) = 0"],
+      ["Spannungsteiler", "u_{2}(t) = \\frac{R_{2}}{R_{1} + R_{2}}\\,u_{0}(t)"],
+      ["Reihenschaltung", "R_{\\mathrm{ges}} = \\sum_{k} R_{k}"],
+      ["Parallelschaltung", "\\frac{1}{R_{\\mathrm{ges}}} = \\sum_{k} \\frac{1}{R_{k}}"],
+      ["Kondensator", "i_{C}(t) = C\\,\\frac{du_{C}(t)}{dt}"],
+      ["Spule", "u_{L}(t) = L\\,\\frac{di_{L}(t)}{dt}"],
+      ["RC-Einschalten", "u_{C}(t) = U_{0}\\left(1 - e^{-t/\\tau}\\right), \\quad \\tau = RC"],
+      ["RL-Ausschalten", "i_{L}(t) = I_{0}\\,e^{-t/\\tau}, \\quad \\tau = \\frac{L}{R}"],
+      ["Feldenergie", "W_{C} = \\frac{1}{2}C\\,u^{2}, \\qquad W_{L} = \\frac{1}{2}L\\,i^{2}"],
+    ]},
+    { tab: "Zeiger & komplexe Zahlen", items: [
+      ["Zeiger", "\\underline{U} = \\hat{U}\\,e^{j\\varphi}"],
+      ["Momentanwert", "u(t) = \\hat{U}\\,\\cos(\\omega t + \\varphi)"],
+      ["Impedanz", "\\underline{Z} = R + jX = |\\underline{Z}|\\,e^{j\\varphi_{Z}}"],
+      ["Betrag & Phase", "|\\underline{Z}| = \\sqrt{R^{2} + X^{2}}, \\quad \\varphi_{Z} = \\arctan\\frac{X}{R}"],
+      ["Euler-Formel", "e^{j\\varphi} = \\cos\\varphi + j\\sin\\varphi"],
+      ["Impedanz RLC-Reihe", "\\underline{Z} = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right)"],
+      ["Resonanz", "\\omega_{0} = \\frac{1}{\\sqrt{LC}}"],
+      ["Komplexe Leistung", "\\underline{S} = \\underline{U}\\,\\underline{I}^{*} = P + jQ"],
+      ["Wirkfaktor", "\\cos\\varphi = \\frac{P}{|\\underline{S}|}"],
+    ]},
+    { tab: "Laplace", items: [
+      ["Definition", "F(s) = \\mathcal{L}\\{f(t)\\} = \\int_{0}^{\\infty} f(t)\\,e^{-st}\\,dt"],
+      ["Rücktransformation", "f(t) = \\mathcal{L}^{-1}\\{F(s)\\} = \\frac{1}{2\\pi j}\\int_{\\sigma - j\\infty}^{\\sigma + j\\infty} F(s)\\,e^{st}\\,ds"],
+      ["Ableitungssatz", "\\mathcal{L}\\left\\{ \\frac{df(t)}{dt} \\right\\} = s\\,F(s) - f(0)"],
+      ["Integrationssatz", "\\mathcal{L}\\left\\{ \\int_{0}^{t} f(\\tau)\\,d\\tau \\right\\} = \\frac{F(s)}{s}"],
+      ["Verschiebungssatz", "\\mathcal{L}\\left\\{ f(t - t_{0})\\,\\varepsilon(t - t_{0}) \\right\\} = F(s)\\,e^{-s\\,t_{0}}"],
+      ["Ähnlichkeitssatz", "\\mathcal{L}\\{f(a\\,t)\\} = \\frac{1}{a}\\,F\\!\\left(\\frac{s}{a}\\right)"],
+      ["Übertragungsfunktion", "H(s) = \\frac{Y(s)}{X(s)}"],
+      ["Sprungantwort", "y(t) = \\mathcal{L}^{-1}\\left\\{ \\frac{H(s)}{s} \\right\\}"],
+      ["Korrespondenzen", "\\varepsilon(t) \\;\\widehat{=}\\; \\frac{1}{s}, \\quad e^{-at} \\;\\widehat{=}\\; \\frac{1}{s+a}, \\quad t \\;\\widehat{=}\\; \\frac{1}{s^{2}}"],
+      ["Harmonische", "\\sin(\\omega t) \\;\\widehat{=}\\; \\frac{\\omega}{s^{2} + \\omega^{2}}, \\quad \\cos(\\omega t) \\;\\widehat{=}\\; \\frac{s}{s^{2} + \\omega^{2}}"],
+      ["Partialbruch", "F(s) = \\sum_{k} \\frac{A_{k}}{s - s_{k}}"],
+      ["RC-Tiefpass", "H(s) = \\frac{1}{1 + s\\,RC}"],
+    ]},
+    { tab: "Fourier", items: [
+      ["Fourier-Reihe", "f(t) = \\frac{a_{0}}{2} + \\sum_{k=1}^{\\infty} \\left( a_{k}\\cos(k\\omega_{0}t) + b_{k}\\sin(k\\omega_{0}t) \\right)"],
+      ["Koeffizienten", "a_{k} = \\frac{2}{T}\\int_{0}^{T} f(t)\\cos(k\\omega_{0}t)\\,dt, \\quad b_{k} = \\frac{2}{T}\\int_{0}^{T} f(t)\\sin(k\\omega_{0}t)\\,dt"],
+      ["Transformation", "F(j\\omega) = \\int_{-\\infty}^{\\infty} f(t)\\,e^{-j\\omega t}\\,dt"],
+      ["Rücktransformation", "f(t) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} F(j\\omega)\\,e^{j\\omega t}\\,d\\omega"],
+      ["Rechteckimpuls", "\\mathrm{rect}\\!\\left(\\frac{t}{\\tau}\\right) \\;\\widehat{=}\\; \\tau\\,\\mathrm{si}\\!\\left(\\frac{\\omega\\tau}{2}\\right)"],
+    ]},
+    { tab: "DGL & Systeme", items: [
+      ["Lineare DGL 2. Ordnung", "a_{2}\\ddot{y} + a_{1}\\dot{y} + a_{0}\\,y = b_{0}\\,x"],
+      ["Charakteristisches Polynom", "a_{2}\\lambda^{2} + a_{1}\\lambda + a_{0} = 0"],
+      ["Homogene Lösung", "y_{h}(t) = K_{1}e^{\\lambda_{1}t} + K_{2}e^{\\lambda_{2}t}"],
+      ["Faltung", "y(t) = \\int_{0}^{t} g(\\tau)\\,x(t - \\tau)\\,d\\tau"],
+      ["Zustandsraum", "\\dot{\\mathbf{x}}(t) = \\mathbf{A}\\,\\mathbf{x}(t) + \\mathbf{b}\\,u(t), \\qquad y(t) = \\mathbf{c}^{T}\\mathbf{x}(t) + d\\,u(t)"],
+      ["Sprungfunktion", "\\varepsilon(t) = \\begin{cases} 0, & t < 0 \\\\ 1, & t \\ge 0 \\end{cases}"],
+    ]},
+    { tab: "Matrizen & Felder", items: [
+      ["LGS", "\\begin{pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} \\end{pmatrix} \\begin{pmatrix} x_{1} \\\\ x_{2} \\end{pmatrix} = \\begin{pmatrix} b_{1} \\\\ b_{2} \\end{pmatrix}"],
+      ["Determinante", "\\det(\\mathbf{A}) = \\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix} = ad - bc"],
+      ["Kreuzprodukt", "\\vec{a} \\times \\vec{b}"],
+      ["Maxwell · Gauß", "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\varepsilon}, \\qquad \\nabla \\cdot \\vec{B} = 0"],
+      ["Maxwell · Wirbel", "\\nabla \\times \\vec{E} = -\\frac{\\partial \\vec{B}}{\\partial t}, \\qquad \\nabla \\times \\vec{B} = \\mu\\,\\vec{J}"],
+      ["Lorentzkraft", "\\vec{F} = q\\left(\\vec{E} + \\vec{v} \\times \\vec{B}\\right)"],
+      ["Plattenkondensator", "C = \\varepsilon\\,\\frac{A}{d}"],
+    ]},
+    { tab: "Struktur", items: [
+      ["Mehrzeilig (aligned)", "\\begin{aligned} u_{L}(t) &= L\\,\\frac{di(t)}{dt} \\\\ &= L\\,\\frac{d}{dt}\\left( \\hat{I}\\sin(\\omega t) \\right) \\end{aligned}"],
+      ["Einheiten", "R = 1{,}5\\,\\mathrm{k\\Omega}"],
+      ["Text in Formel", "f(t) = 0 \\quad \\text{für } t < 0"],
+      ["Lange Brüche", "\\frac{\\frac{a}{b}}{\\frac{c}{d}}"],
+    ]},
+  ];
+  const DEMO = LIB[2].items[0][1]; // Laplace-Definition
+
+  let activeTab = 0;
+  const libTabs = $("#libTabs"), libGrid = $("#libGrid");
+  function renderLib() {
+    libTabs.innerHTML = "";
+    LIB.forEach((g, i) => {
+      const b = document.createElement("button");
+      b.textContent = g.tab;
+      b.className = i === activeTab ? "on" : "";
+      b.addEventListener("click", () => { activeTab = i; renderLib(); });
+      libTabs.appendChild(b);
+    });
+    libGrid.innerHTML = "";
+    LIB[activeTab].items.forEach(([name, tex]) => {
+      const d = document.createElement("div");
+      d.className = "libitem";
+      d.title = tex + "\n\nKlick: einfügen an der Cursorposition";
+      const m = document.createElement("div");
+      m.className = "m";
+      try { m.innerHTML = renderToString(tex, false); } catch (e) { m.textContent = tex; }
+      const n = document.createElement("div");
+      n.className = "n";
+      n.textContent = name;
+      d.appendChild(m); d.appendChild(n);
+      d.addEventListener("click", () => insertAtCursor(tex, false));
+      libGrid.appendChild(d);
+    });
+  }
+
+  /* ---------- Verlauf ---------- */
+  const HKEY = "automath.history", CKEY = "automath.current";
+  function loadHist() { try { return JSON.parse(localStorage.getItem(HKEY) || "[]"); } catch (e) { return []; } }
+  function saveHist(h) { try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch (e) {} }
+  function addHistory(tex, display) {
+    const h = loadHist().filter((x) => x.tex !== tex);
+    h.unshift({ tex, display, ts: Date.now() });
+    if (h.length > 40) h.length = 40;
+    saveHist(h); renderHist();
+  }
+  function renderHist() {
+    const list = $("#histlist");
+    const h = loadHist();
+    list.innerHTML = "";
+    if (!h.length) {
+      list.innerHTML = '<div style="color:#9ca3af;font-size:13px">Noch nichts kopiert. Jede kopierte Formel landet automatisch hier.</div>';
+      return;
+    }
+    h.forEach((item, idx) => {
+      const d = document.createElement("div");
+      d.className = "hitem";
+      const m = document.createElement("div");
+      m.className = "m";
+      try { m.innerHTML = renderToString(item.tex, false); } catch (e) { m.textContent = item.tex; }
+      const t = document.createElement("time");
+      t.textContent = new Date(item.ts).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+      const del = document.createElement("button");
+      del.className = "del"; del.textContent = "✕"; del.title = "Entfernen";
+      del.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const rest = loadHist(); rest.splice(idx, 1); saveHist(rest); renderHist();
+      });
+      d.appendChild(m); d.appendChild(t); d.appendChild(del);
+      d.title = "Klick: Formel laden";
+      d.addEventListener("click", () => {
+        texEl.value = item.tex;
+        setMode(!!item.display);
+        render(); saveCurrent();
+      });
+      list.appendChild(d);
+    });
+  }
+  $("#btnHistClear").addEventListener("click", () => { saveHist([]); renderHist(); toast("Verlauf geleert."); });
+
+  /* ---------- Speichern / Laden ---------- */
+  let saved;
+  function saveCurrent() { try { localStorage.setItem(CKEY, JSON.stringify({ tex: texEl.value, display: S.display })); } catch (e) {} }
+  try { saved = JSON.parse(localStorage.getItem(CKEY) || "null"); } catch (e) { saved = null; }
+  if (saved && typeof saved.tex === "string") {
+    texEl.value = saved.tex;
+    S.display = saved.display !== false;
+  } else {
+    texEl.value = DEMO;
+  }
+  $("#modeBlock").classList.toggle("on", S.display);
+  $("#modeInline").classList.toggle("on", !S.display);
+
+  /* ---------- Toast ---------- */
+  let toastT;
+  function toast(msg, ok) {
+    toastEl.textContent = msg;
+    toastEl.classList.toggle("err", ok === false);
+    toastEl.classList.add("show");
+    clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.remove("show"), 2600);
+  }
+
+  /* ---------- Paste: Delimiter entfernen ---------- */
+  texEl.addEventListener("paste", (e) => {
+    const t = (e.clipboardData || window.clipboardData).getData("text");
+    if (!t) return;
+    const stripped = stripDelims(t);
+    if (stripped !== t.trim()) {
+      e.preventDefault();
+      insertAtCursor(stripped, true);
+      toast("Delimiter entfernt – LaTeX übernommen.");
+    }
+  });
+
+  /* ---------- OCR (Screenshot → LaTeX) ---------- */
+  const OCR_MODEL = "onnx-community/TexTeller3-ONNX";
+  const OCR_DTYPE = "q4";
+  const TJS_CDN = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2";
+  let tjsMod = null, ocrPipe = null, ocrBusy = false;
+  let pendingImage = null, pendingThumbUrl = null;
+
+  const dropEl = $("#dropzone"), thumbEl = $("#thumb"), thumbHintEl = $("#thumbhint");
+  const btnOcr = $("#btnOcr"), btnOcrClear = $("#btnOcrClear");
+  const ocrStatusEl = $("#ocrStatus"), ocrBarEl = $("#ocrBar"), ocrBarFill = $("#ocrBarFill"), ocrResultEl = $("#ocrResult");
+
+  function setOcrStatus(text, isErr) {
+    if (!text) { ocrStatusEl.hidden = true; return; }
+    ocrStatusEl.hidden = false;
+    ocrStatusEl.textContent = text;
+    ocrStatusEl.classList.toggle("err", isErr === true);
+  }
+  function setPendingImage(file) {
+    if (pendingThumbUrl) URL.revokeObjectURL(pendingThumbUrl);
+    pendingImage = file || null;
+    if (pendingImage) {
+      pendingThumbUrl = URL.createObjectURL(pendingImage);
+      thumbEl.src = pendingThumbUrl;
+      thumbEl.hidden = false;
+      thumbHintEl.hidden = true;
+      btnOcr.disabled = false;
+      btnOcrClear.hidden = false;
+      ocrResultEl.hidden = true;
+      setOcrStatus("Bild bereit – „Formel erkennen“ klicken.");
+    } else {
+      thumbEl.hidden = true; thumbEl.removeAttribute("src");
+      thumbHintEl.hidden = false;
+      btnOcr.disabled = true;
+      btnOcrClear.hidden = true;
+      ocrBarEl.hidden = true;
+      ocrResultEl.hidden = true;
+      setOcrStatus(null);
+    }
+  }
+  btnOcrClear.addEventListener("click", () => setPendingImage(null));
+
+  // Screenshot aus Zwischenablage (ganzseitig)
+  document.addEventListener("paste", (e) => {
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const it of items) {
+      if (it.type && it.type.startsWith("image/")) {
+        const f = it.getAsFile();
+        if (f) { e.preventDefault(); setPendingImage(f); toast("📸 Screenshot erkannt – bereit zur Erkennung."); return; }
+      }
+    }
+  });
+
+  // Drag & Drop
+  ["dragover", "dragenter"].forEach((ev) => dropEl.addEventListener(ev, (e) => {
+    e.preventDefault(); dropEl.classList.add("drag");
+  }));
+  ["dragleave", "drop"].forEach((ev) => dropEl.addEventListener(ev, (e) => {
+    e.preventDefault(); dropEl.classList.remove("drag");
+  }));
+  dropEl.addEventListener("drop", (e) => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f && f.type.startsWith("image/")) setPendingImage(f);
+  });
+  dropEl.addEventListener("click", () => $("#ocrFile").click());
+  $("#ocrFile").addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) setPendingImage(f);
+    e.target.value = "";
+  });
+
+  // Auf dunkle Pixel (Formelinhalt) zuschneiden, mit kleinem Rand
+  function cropToInk(cv) {
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    const w = cv.width, h = cv.height;
+    const { data } = ctx.getImageData(0, 0, w, h);
+    let minX = w, minY = h, maxX = -1, maxY = -1;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const dark = data[i + 3] > 20 && data[i] < 200;
+        if (dark) {
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+    if (maxX < 0) return cv;
+    const m = Math.round(Math.max(maxX - minX, maxY - minY) * 0.04) + 4;
+    minX = Math.max(0, minX - m); minY = Math.max(0, minY - m);
+    maxX = Math.min(w - 1, maxX + m); maxY = Math.min(h - 1, maxY + m);
+    const cw = maxX - minX + 1, ch = maxY - minY + 1;
+    const out = document.createElement("canvas");
+    out.width = cw; out.height = ch;
+    out.getContext("2d").drawImage(cv, minX, minY, cw, ch, 0, 0, cw, ch);
+    return out;
+  }
+
+  // Bild vorbereiten: weißer Hintergrund, Inhalt zuschneiden, optional Quadrat auffüllen → Canvas
+  function prepareCanvas(file, padToSquare, autoCrop) {
+    if (autoCrop === undefined) autoCrop = true;
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        if (!img.width || !img.height) { reject(new Error("Leeres Bild")); return; }
+        const cw = padToSquare ? Math.max(img.width, img.height) : img.width;
+        const ch = padToSquare ? Math.max(img.width, img.height) : img.height;
+        const cv = document.createElement("canvas");
+        cv.width = cw; cv.height = ch;
+        const ctx = cv.getContext("2d", { willReadFrequently: true });
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(img, Math.round((cw - img.width) / 2), Math.round((ch - img.height) / 2));
+        let out = autoCrop ? cropToInk(cv) : cv;
+        if (padToSquare && (out.width !== out.height)) {
+          const s = Math.max(out.width, out.height);
+          const sq = document.createElement("canvas");
+          sq.width = s; sq.height = s;
+          const sctx = sq.getContext("2d", { willReadFrequently: true });
+          sctx.fillStyle = "#ffffff";
+          sctx.fillRect(0, 0, s, s);
+          sctx.drawImage(out, Math.round((s - out.width) / 2), Math.round((s - out.height) / 2));
+          out = sq;
+        }
+        resolve(out);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Bild konnte nicht gelesen werden")); };
+      img.src = url;
+    });
+  }
+
+  // TexTeller3 erwartet Graustufen (1 Kanal) – RawImage selbst bauen
+  function canvasToRawGray(cv) {
+    const ctx = cv.getContext("2d", { willReadFrequently: true });
+    const { data } = ctx.getImageData(0, 0, cv.width, cv.height);
+    const gray = new Uint8ClampedArray(cv.width * cv.height);
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) gray[j] = data[i];
+    return new tjsMod.RawImage(gray, cv.width, cv.height, 1);
+  }
+
+  async function ensureOcrPipe() {
+    if (ocrPipe) return ocrPipe;
+    setOcrStatus("Lade OCR-Bibliothek …");
+    if (!tjsMod) {
+      tjsMod = await import(TJS_CDN);
+      tjsMod.env.allowLocalModels = false;
+    }
+    setOcrStatus("Lade KI-Modell (einmalig ~250 MB, danach Browser-Cache) …");
+    ocrBarEl.hidden = false;
+    const files = new Map();
+    const onProgress = (d) => {
+      if (d && d.status === "progress" && d.total) {
+        files.set(d.file, { l: d.loaded || 0, t: d.total });
+        let L = 0, T = 0;
+        files.forEach((v) => { L += v.l; T += v.t; });
+        const pct = T ? Math.round((L / T) * 100) : 0;
+        ocrBarFill.style.width = Math.min(100, pct) + "%";
+        const cur = Math.round(((d.loaded || 0) / d.total) * 100);
+        setOcrStatus("Lade KI-Modell (" + d.file.split("/").pop() + "): " + cur + " % · gesamt " + pct + " %");
+      } else if (d && d.status === "ready") {
+        ocrBarFill.style.width = "100%";
+        setOcrStatus("Modell bereit – Formel wird erkannt …");
+      }
+    };
+    ocrPipe = await tjsMod.pipeline("image-to-text", OCR_MODEL, {
+      dtype: OCR_DTYPE,
+      progress_callback: onProgress,
+    });
+    ocrBarEl.hidden = true;
+    return ocrPipe;
+  }
+
+  async function recognizeImage(file, padToSquare) {
+    const pipe = await ensureOcrPipe();
+    const cv = await prepareCanvas(file, padToSquare);
+    const raw = canvasToRawGray(cv);
+    setOcrStatus("Formel wird erkannt … (auf der CPU kann das einige Sekunden dauern)");
+    const out = await pipe(raw, { max_new_tokens: 640 });
+    const text = out && out[0] && out[0].generated_text ? out[0].generated_text.trim() : "";
+    if (!text) throw new Error("Kein Text erkannt");
+    return stripDelims(text);
+  }
+
+  btnOcr.addEventListener("click", async () => {
+    if (ocrBusy || !pendingImage) return;
+    ocrBusy = true;
+    btnOcr.disabled = true;
+    try {
+      const tex = await recognizeImage(pendingImage, true);
+      ocrResultEl.hidden = false;
+      ocrResultEl.textContent = tex;
+      insertAtCursor(tex, !texEl.value.trim());
+      setOcrStatus("✓ Erkannt und in den Editor übernommen – bitte kurz prüfen!");
+      toast("✓ Formel erkannt – bitte kurz gegen das Original prüfen.");
+    } catch (err) {
+      setOcrStatus("⚠ OCR fehlgeschlagen: " + (err && err.message ? err.message : err) +
+        " – Internet nötig (erster Download). Alternativ: OpenMathpix nutzen.", true);
+    } finally {
+      ocrBusy = false;
+      btnOcr.disabled = !pendingImage;
+    }
+  });
+
+  /* ---------- Start ---------- */
+  renderLib();
+  renderHist();
+  render();
+
+  window.AM = { S, render, sanitizeMml, renderToString, stripDelims, lib: LIB, insert: insertAtCursor,
+    pngBlob: copyPngBlob, recognize: recognizeImage, setPendingImage, prepareCanvas };
+})();
+</script>
+</body>
+</html>
