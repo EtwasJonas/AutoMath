@@ -619,7 +619,7 @@ body {
   <h2>📸 Screenshot → Formel (OCR, läuft im Browser)</h2>
   <div class="ocrrow">
     <div id="dropzone" title="Klicken oder Bild hierher ziehen">
-      <span id="thumbhint">Screenshot mit <b>Strg + V</b> einfügen – oder hier klicken und eine Bilddatei wählen.<br>Formel möglichst eng umrahmen, mit etwas weißem Rand.</span>
+      <span id="thumbhint">Screenshot mit <b>Strg + V</b> einfügen – die Erkennung startet automatisch.<br>Alternativ: hier klicken und eine Bilddatei wählen. Formel möglichst eng umrahmen.</span>
       <img id="thumb" alt="" hidden>
     </div>
     <input type="file" id="ocrFile" accept="image/*" hidden>
@@ -1101,6 +1101,27 @@ body {
   }
   btnOcrClear.addEventListener("click", () => setPendingImage(null));
 
+  async function runOcr() {
+    if (ocrBusy || !pendingImage) return;
+    ocrBusy = true;
+    btnOcr.disabled = true;
+    try {
+      const tex = await recognizeImage(pendingImage, false);
+      ocrResultEl.hidden = false;
+      ocrResultEl.textContent = tex;
+      insertAtCursor(tex, !texEl.value.trim());
+      setOcrStatus("✓ Erkannt und in den Editor übernommen – bitte kurz prüfen!");
+      toast("✓ Formel erkannt – bitte kurz gegen das Original prüfen.");
+    } catch (err) {
+      setOcrStatus("⚠ OCR fehlgeschlagen: " + (err && err.message ? err.message : err) +
+        " – Internet nötig (erster Download). Alternativ: OpenMathpix nutzen.", true);
+    } finally {
+      ocrBusy = false;
+      btnOcr.disabled = !pendingImage;
+    }
+  }
+  btnOcr.addEventListener("click", runOcr);
+
   // Screenshot aus Zwischenablage (ganzseitig)
   document.addEventListener("paste", (e) => {
     const items = e.clipboardData && e.clipboardData.items;
@@ -1108,7 +1129,7 @@ body {
     for (const it of items) {
       if (it.type && it.type.startsWith("image/")) {
         const f = it.getAsFile();
-        if (f) { e.preventDefault(); setPendingImage(f); toast("📸 Screenshot erkannt – bereit zur Erkennung."); return; }
+        if (f) { e.preventDefault(); setPendingImage(f); toast("📸 Screenshot erkannt – Erkennung läuft …"); runOcr(); return; }
       }
     }
   });
@@ -1122,12 +1143,12 @@ body {
   }));
   dropEl.addEventListener("drop", (e) => {
     const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if (f && f.type.startsWith("image/")) setPendingImage(f);
+    if (f && f.type.startsWith("image/")) { setPendingImage(f); runOcr(); }
   });
   dropEl.addEventListener("click", () => $("#ocrFile").click());
   $("#ocrFile").addEventListener("change", (e) => {
     const f = e.target.files && e.target.files[0];
-    if (f) setPendingImage(f);
+    if (f) { setPendingImage(f); runOcr(); }
     e.target.value = "";
   });
 
@@ -1246,26 +1267,6 @@ body {
     if (!text) throw new Error("Kein Text erkannt");
     return stripDelims(text);
   }
-
-  btnOcr.addEventListener("click", async () => {
-    if (ocrBusy || !pendingImage) return;
-    ocrBusy = true;
-    btnOcr.disabled = true;
-    try {
-      const tex = await recognizeImage(pendingImage, true);
-      ocrResultEl.hidden = false;
-      ocrResultEl.textContent = tex;
-      insertAtCursor(tex, !texEl.value.trim());
-      setOcrStatus("✓ Erkannt und in den Editor übernommen – bitte kurz prüfen!");
-      toast("✓ Formel erkannt – bitte kurz gegen das Original prüfen.");
-    } catch (err) {
-      setOcrStatus("⚠ OCR fehlgeschlagen: " + (err && err.message ? err.message : err) +
-        " – Internet nötig (erster Download). Alternativ: OpenMathpix nutzen.", true);
-    } finally {
-      ocrBusy = false;
-      btnOcr.disabled = !pendingImage;
-    }
-  });
 
   /* ---------- Start ---------- */
   renderLib();

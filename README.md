@@ -5,7 +5,7 @@ Für Tutorien in HM 1 (Elektrotechnik): **Screenshot einfügen (Strg+V) → KI l
 ## Schnellstart
 
 1. `AutoMath.html` per Doppelklick öffnen (eine einzige Datei – Bibliothek und Schrift sind eingebettet).
-2. **Screenshot einfügen:** `Win + Shift + S` über die Formel im Skript → in AutoMath `Strg + V` → „Formel erkennen" (OCR mit TexTeller3, läuft im Browser; erstmalig ~250 MB Modell-Download, danach offline aus dem Cache) – oder LaTeX direkt tippen, z. B. `F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt`
+2. **Screenshot einfügen:** `Win + Shift + S` über die Formel im Skript → in AutoMath `Strg + V` – die Erkennung startet automatisch und übernimmt das LaTeX in den Editor (OCR mit TexTeller3, läuft im Browser; erstmalig ~250 MB Modell-Download, danach offline aus dem Cache). Alternativ LaTeX direkt tippen, z. B. `F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt`
    - `$…$` / `$$…$$` beim Einfügen werden automatisch entfernt.
    - Zeichen-Palette über dem Eingabefeld; Formelbibliothek (Grundlagen, Zeiger, Laplace, Fourier, DGL, Matrizen/Felder, Struktur) per Klick einfügbar.
 3. **„Für PowerPoint kopieren"** klicken (oder `Strg+Enter`).
