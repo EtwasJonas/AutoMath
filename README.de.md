@@ -41,7 +41,7 @@ Quellen zur Office-Unterstützung:
 3. Die KI **TexTeller3** liest die Formel und übernimmt das LaTeX in den Editor.
 4. Kurz gegen das Original prüfen → **„Für PowerPoint kopieren"** → `Strg+V` auf der Folie.
 
-- Die Erkennung läuft **lokal im Browser** (WebGPU/WASM). Beim ersten Mal wird das Modell (~250 MB, quantisiert) heruntergeladen und im Browser-Cache behalten – danach funktioniert OCR auch offline.
+- Die Erkennung läuft **lokal im Browser** – auf der GPU (WebGPU), falls verfügbar, sonst auf der CPU. Beim ersten Mal wird das Modell (~200–250 MB, quantisiert) heruntergeladen und im Browser-Cache behalten – danach funktioniert OCR auch offline. Bilder werden vor der Erkennung automatisch auf den Formelinhalt zugeschnitten und seitenverhältnistreu auf ein Quadrat aufgefüllt.
 - Für Handschrift oder schwierige Fälle: [OpenMathpix](https://github.com/JhuoW/OpenMathpix) (offline, gratis) – das LaTeX landet in der Zwischenablage, einfach in AutoMath einfügen. Weitere Alternativen: [Mathpix Snip](https://mathpix.com) (Freemium), [mathcheap.xyz](https://mathcheap.xyz), [imagetolatex.com](https://imagetolatex.com).
 
 ## Verlauf & Speicherung

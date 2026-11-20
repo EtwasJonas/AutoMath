@@ -41,7 +41,7 @@ Sources on the Office support behind this:
 3. The AI **TexTeller3** reads the formula and inserts the LaTeX into the editor.
 4. Double-check against the original → **“Copy for PowerPoint”** → `Ctrl+V` on the slide.
 
-- Recognition runs **locally in the browser** (WebGPU/WASM). On first use the model (~250 MB, quantized) is downloaded and kept in the browser cache – afterwards OCR also works offline.
+- Recognition runs **locally in the browser** – on the GPU (WebGPU) when available, otherwise on the CPU. On first use the model (~200–250 MB, quantized) is downloaded and kept in the browser cache – afterwards OCR also works offline. Images are auto-cropped to the formula ink and padded to a square (aspect-preserving) before recognition.
 - For handwriting or difficult cases: [OpenMathpix](https://github.com/JhuoW/OpenMathpix) (offline, free) – the LaTeX lands on your clipboard, simply paste it into AutoMath. Other alternatives: [Mathpix Snip](https://mathpix.com) (Freemium), [mathcheap.xyz](https://mathcheap.xyz), [imagetolatex.com](https://imagetolatex.com).
 
 ## History & storage
