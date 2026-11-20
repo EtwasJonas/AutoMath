@@ -4,6 +4,12 @@
 
 For tutoring in engineering mathematics (electrical engineering): **Paste a screenshot (`Ctrl+V`) → the AI reads the formula (OCR) → live preview → one click to copy → into PowerPoint as a native, editable equation.**
 
+## Use it online
+
+**▶ https://etwasjonas.github.io/AutoMath/**
+
+No installation needed – the page is a single HTML file served via GitHub Pages (works in any modern browser). To use it fully offline (e.g. during lectures), download [`AutoMath.html`](https://github.com/EtwasJonas/AutoMath/raw/main/AutoMath.html) and open it by double-clicking – everything is embedded; only the first OCR model download needs internet.
+
 ## Quick start
 
 1. Open `AutoMath.html` by double-clicking (a single file – library and fonts are embedded).

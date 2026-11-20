@@ -4,6 +4,12 @@
 
 Für Tutorien in HM 1 (Elektrotechnik): **Screenshot einfügen (`Strg+V`) → die KI liest die Formel (OCR) → Live-Vorschau → ein Klick kopieren → in PowerPoint als native, editierbare Formel einfügen.**
 
+## Online nutzen
+
+**▶ https://etwasjonas.github.io/AutoMath/**
+
+Keine Installation nötig – die Seite ist eine einzelne HTML-Datei via GitHub Pages (läuft in jedem modernen Browser). Für die komplett offline Nutzung (z. B. im Tutorium) [`AutoMath.html`](https://github.com/EtwasJonas/AutoMath/raw/main/AutoMath.html) herunterladen und per Doppelklick öffnen – alles ist eingebettet; nur der erste OCR-Modell-Download braucht Internet.
+
 ## Schnellstart
 
 1. `AutoMath.html` per Doppelklick öffnen (eine einzige Datei – Bibliothek und Schrift sind eingebettet).
