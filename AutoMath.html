@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AutoMath – Formel-Werkstatt für PowerPoint</title>
+<title>AutoMath – Formula Workshop for PowerPoint</title>
 <style>/*
 Temml.woff2 is a clone of KaTeX_Script-Regular, except that the code points
 have been changed from ASCII to Unicode Mathematical Alphanumeric Symbols Script capitals,
@@ -404,15 +404,25 @@ body {
   header {
     background: linear-gradient(120deg, #312e81, #4f46e5 55%, #6d28d9);
     color: #fff;
-    margin: 0 -16px 18px;
-    padding: 22px 28px 20px;
+    margin: 0 -16px 14px;
+    padding: 10px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
   }
-  header h1 { margin: 0; font-size: 22px; letter-spacing: .2px; }
-  header p { margin: 4px 0 0; opacity: .85; font-size: 14px; }
+  header .htxt h1 { margin: 0; font-size: 16px; letter-spacing: .2px; }
+  header .htxt p { margin: 2px 0 0; opacity: .85; font-size: 12.5px; }
   header kbd {
     background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
-    border-radius: 5px; padding: 0 5px; font-size: 12px; font-family: inherit;
+    border-radius: 5px; padding: 0 4px; font-size: 11px; font-family: inherit;
   }
+  #langseg { border: 1px solid rgba(255,255,255,.45); border-radius: 9px; overflow: hidden; flex-shrink: 0; }
+  #langseg button {
+    border: 0; background: transparent; color: #fff; padding: 5px 11px;
+    font-size: 12px; cursor: pointer; opacity: .75;
+  }
+  #langseg button.on { background: rgba(255,255,255,.25); opacity: 1; font-weight: 600; }
   main.cols {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
@@ -424,13 +434,38 @@ body {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 16px 18px;
+    padding: 14px 18px;
     box-shadow: 0 1px 3px rgba(20, 24, 60, .05);
   }
   .card h2 {
-    margin: 0 0 10px; font-size: 13px; text-transform: uppercase;
+    margin: 0 0 10px; font-size: 12.5px; text-transform: uppercase;
     letter-spacing: .8px; color: var(--muted); font-weight: 600;
   }
+  /* ------- OCR (first card) ------- */
+  .ocrwrap { max-width: 1280px; margin: 0 auto 16px; }
+  .ocrrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px; }
+  #dropzone {
+    border: 2px dashed var(--line); border-radius: 10px; background: #fbfcff;
+    min-height: 118px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 8px; text-align: center;
+  }
+  #dropzone.drag { border-color: var(--accent); background: #f3f2ff; }
+  #dropzone img { max-width: 100%; max-height: 180px; border-radius: 6px; }
+  #thumbhint { color: #9ca3af; font-size: 13px; padding: 8px; }
+  #btnOcr { border: 0; background: var(--accent); color: #fff; border-radius: 10px;
+    padding: 9px 15px; font-size: 14px; cursor: pointer; }
+  #btnOcr:hover { background: var(--accent-dark); }
+  #btnOcr:disabled { background: #b9b6f5; cursor: wait; }
+  .ocrstatus { margin-top: 10px; font-size: 13.5px; color: var(--muted); }
+  .ocrstatus.err { color: var(--err); }
+  .ocrbar { margin-top: 6px; height: 8px; background: #eceef7; border-radius: 99px; overflow: hidden; }
+  .ocrbar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #8b5cf6); transition: width .3s; }
+  .ocrresult {
+    margin-top: 10px; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    background: #f4f5fb; border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 12px; font-size: 13px; word-break: break-all; color: var(--ink);
+  }
+  .ocrnote { margin-top: 12px; color: var(--muted); font-size: 12.5px; }
   /* ------- Editor ------- */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .chip {
@@ -440,7 +475,7 @@ body {
   }
   .chip:hover { border-color: var(--accent); color: var(--accent); background: #f3f2ff; }
   #tex {
-    width: 100%; min-height: 190px; resize: vertical;
+    width: 100%; min-height: 180px; resize: vertical;
     font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
     font-size: 14.5px; line-height: 1.5;
     border: 1.5px solid var(--line); border-radius: 10px;
@@ -465,17 +500,17 @@ body {
   }
   /* ------- Preview ------- */
   #preview {
-    min-height: 150px; border: 1.5px dashed var(--line); border-radius: 10px;
+    min-height: 140px; border: 1.5px dashed var(--line); border-radius: 10px;
     background: #fdfdff; display: flex; align-items: center; justify-content: center;
-    padding: 26px 18px; overflow-x: auto;
+    padding: 22px 18px; overflow-x: auto;
   }
   #preview .hint { color: #9ca3af; font-size: 14px; }
-  #preview math { font-size: 1.75em; }
-  .btns { display: grid; gap: 8px; margin-top: 14px; }
+  #preview math { font-size: 1.7em; }
+  .btns { display: grid; gap: 8px; margin-top: 12px; }
   .btn {
     display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
     border: 1px solid var(--line); border-radius: 10px; background: #fff;
-    padding: 10px 14px; cursor: pointer; text-align: left; width: 100%;
+    padding: 9px 14px; cursor: pointer; text-align: left; width: 100%;
     font-size: 14px; color: var(--ink);
   }
   .btn small { color: var(--muted); font-size: 12px; }
@@ -487,33 +522,7 @@ body {
   .btn.main small { color: rgba(255,255,255,.85); }
   .btn.main:hover { filter: brightness(1.06); }
   .btnrow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  /* ------- OCR ------- */
-  .ocrwrap { max-width: 1280px; margin: 16px auto 0; }
-  .ocrrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 14px; }
-  #dropzone {
-    border: 2px dashed var(--line); border-radius: 10px; background: #fbfcff;
-    min-height: 150px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; padding: 10px; text-align: center;
-  }
-  #dropzone.drag { border-color: var(--accent); background: #f3f2ff; }
-  #dropzone img { max-width: 100%; max-height: 220px; border-radius: 6px; }
-  #thumbhint { color: #9ca3af; font-size: 13.5px; padding: 10px; }
-  #btnOcr { border: 0; background: var(--accent); color: #fff; border-radius: 10px;
-    padding: 10px 16px; font-size: 14.5px; cursor: pointer; }
-  #btnOcr:hover { background: var(--accent-dark); }
-  #btnOcr:disabled { background: #b9b6f5; cursor: wait; }
-  .ocrstatus { margin-top: 10px; font-size: 13.5px; color: var(--muted); }
-  .ocrstatus.err { color: var(--err); }
-  .ocrbar { margin-top: 6px; height: 8px; background: #eceef7; border-radius: 99px; overflow: hidden; }
-  .ocrbar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #8b5cf6); transition: width .3s; }
-  .ocrresult {
-    margin-top: 10px; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
-    background: #f4f5fb; border: 1px solid var(--line); border-radius: 9px;
-    padding: 9px 12px; font-size: 13px; word-break: break-all; color: var(--ink);
-  }
-  .ocrnote { margin-top: 12px; color: var(--muted); font-size: 12.5px; }
-  .filelabel { position: relative; overflow: hidden; display: inline-block; }
-  /* ------- Bibliothek ------- */
+  /* ------- Library ------- */
   .libwrap, .lowwrap { max-width: 1280px; margin: 16px auto 0; }
   .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
   .tabs button {
@@ -531,8 +540,8 @@ body {
   }
   .libitem:hover { border-color: var(--accent); background: #f5f4ff; }
   .libitem .m { font-size: 1.05em; max-width: 100%; overflow: hidden; }
-  .libitem .n { font-size: 11.5px; color: var(--muted); }
-  /* ------- Verlauf & Hilfe ------- */
+  .libitem .n { font-size: 11.5px; color: var(--muted); text-align: center; }
+  /* ------- History & Help ------- */
   .lowcols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; }
   #histlist { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
   .hitem {
@@ -566,127 +575,122 @@ body {
   #toast.err { background: var(--err); }
   footer { max-width: 1280px; margin: 22px auto 0; color: #9ca3af; font-size: 12.5px; text-align: center; }
   @media (max-width: 940px) {
-    main.cols, .lowcols { grid-template-columns: 1fr; }
+    main.cols, .lowcols, .ocrrow { grid-template-columns: 1fr; }
+    header { flex-wrap: wrap; }
   }
 </style>
 </head>
 <body>
 <header>
-  <h1>📐 AutoMath – Formel-Werkstatt</h1>
-  <p>Screenshot einfügen (<kbd>Strg</kbd>+<kbd>V</kbd>) oder LaTeX tippen → Live-Vorschau → <kbd>Strg</kbd>+<kbd>V</kbd> in PowerPoint als <b>native, editierbare Formel</b>.</p>
+  <div class="htxt">
+    <h1 data-i18n="headerTitle">📐 AutoMath – Formula Workshop</h1>
+    <p data-i18n="headerSub">Paste a screenshot (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or type LaTeX → live preview → <kbd>Ctrl</kbd>+<kbd>V</kbd> into PowerPoint as a <b>native, editable equation</b>.</p>
+  </div>
+  <span class="seg" id="langseg">
+    <button id="langEn" class="on" title="English">EN</button>
+    <button id="langDe" title="Deutsch">DE</button>
+  </span>
 </header>
 
-<main class="cols">
-  <section class="card">
-    <h2>LaTeX-Eingabe</h2>
-    <div class="chips" id="palette"></div>
-    <textarea id="tex" spellcheck="false" placeholder="z. B.  F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt"></textarea>
-    <div id="error" hidden></div>
-    <div class="row">
-      <span class="seg" id="modeSeg">
-        <button id="modeBlock" class="on" title="Eigene Zeile, große Brüche – Standard für Folien">Anzeigeformel</button>
-        <button id="modeInline" title="Innerhalb einer Textzeile">Inline</button>
-      </span>
-      <button class="ghost" id="btnDemo">Beispiel laden</button>
-      <button class="ghost" id="btnClear">Leeren</button>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Vorschau</h2>
-    <div id="preview"><span class="hint">Hier erscheint deine Formel …</span></div>
-    <div class="btns">
-      <button class="btn main" id="btnMml" title="Strg+Enter">
-        📋&nbsp; Für PowerPoint kopieren (native Formel)
-        <small>Nach dem Kopieren: auf der Folie Strg + V – es entsteht eine editierbare Office-Formel.</small>
-      </button>
-      <div class="btnrow">
-        <button class="btn" id="btnTex">
-          📝&nbsp; LaTeX mit $$ … $$ kopieren
-          <small>Neuere M365-Builds fügen das direkt als Formel ein.</small>
-        </button>
-        <button class="btn" id="btnPng">
-          🖼️&nbsp; PNG kopieren (Bild)
-          <small>Fallback: sieht wie gesetztes LaTeX aus, aber nicht editierbar.</small>
-        </button>
-      </div>
-      <button class="btn" id="btnDl">💾&nbsp; PNG herunterladen <small>Für Sicherungskopien oder alte Office-Versionen.</small></button>
-    </div>
-  </section>
-</main>
-
 <section class="card ocrwrap">
-  <h2>📸 Screenshot → Formel (OCR, läuft im Browser)</h2>
+  <h2 data-i18n="ocrHead">📸 Screenshot → equation (OCR, runs in your browser)</h2>
   <div class="ocrrow">
-    <div id="dropzone" title="Klicken oder Bild hierher ziehen">
-      <span id="thumbhint">Screenshot mit <b>Strg + V</b> einfügen – die Erkennung startet automatisch.<br>Alternativ: hier klicken und eine Bilddatei wählen. Formel möglichst eng umrahmen.</span>
+    <div id="dropzone" data-i18n-title="dropzoneTip" title="Click or drop an image here">
+      <span id="thumbhint" data-i18n="thumbHint">Paste a screenshot with <b>Ctrl + V</b> – recognition starts automatically.<br>Or click here to pick an image file. Frame the formula as tightly as possible.</span>
       <img id="thumb" alt="" hidden>
     </div>
     <input type="file" id="ocrFile" accept="image/*" hidden>
     <div>
       <div class="row" style="margin-top:0">
-        <button id="btnOcr" disabled title="Bild wird erkannt">🔎&nbsp; Formel erkennen</button>
-        <button class="ghost" id="btnOcrClear" hidden>Bild entfernen</button>
+        <button id="btnOcr" disabled data-i18n="btnOcr">🔎&nbsp; Recognise formula</button>
+        <button class="ghost" id="btnOcrClear" hidden data-i18n="btnOcrClear">Remove image</button>
       </div>
       <div id="ocrStatus" class="ocrstatus" hidden></div>
       <div id="ocrBar" class="ocrbar" hidden><div id="ocrBarFill"></div></div>
       <div id="ocrResult" class="ocrresult" hidden></div>
-      <div class="ocrnote">Erkennung mit der KI <b>TexTeller3</b> (Apache-2.0), direkt lokal im Browser. Erstmalig ~250&nbsp;MB Modell-Download, danach aus dem Browser-Cache – dafür braucht es beim ersten Mal Internet. Ergebnis immer kurz gegen das Original prüfen.</div>
+      <div class="ocrnote" data-i18n="ocrNote">Recognition uses the <b>TexTeller3</b> AI (Apache-2.0), running locally in your browser. The ~250&nbsp;MB model downloads once (internet needed the first time), afterwards it is served from the browser cache. Always double-check results against the original.</div>
     </div>
   </div>
 </section>
 
+<main class="cols">
+  <section class="card">
+    <h2 data-i18n="editorHead">LaTeX input</h2>
+    <div class="chips" id="palette"></div>
+    <textarea id="tex" spellcheck="false" data-i18n-ph="texPh" placeholder="e.g.  F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt"></textarea>
+    <div id="error" hidden></div>
+    <div class="row">
+      <span class="seg" id="modeSeg">
+        <button id="modeBlock" class="on" data-i18n="modeBlock" data-i18n-title="modeBlockTip" title="Own line, large fractions – standard for slides">Display mode</button>
+        <button id="modeInline" data-i18n="modeInline" data-i18n-title="modeInlineTip" title="Within a line of text">Inline</button>
+      </span>
+      <button class="ghost" id="btnDemo" data-i18n="btnDemo">Load example</button>
+      <button class="ghost" id="btnClear" data-i18n="btnClear">Clear</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="previewHead">Preview</h2>
+    <div id="preview"><span class="hint" data-i18n="previewHint">Your formula will appear here …</span></div>
+    <div class="btns">
+      <button class="btn main" id="btnMml" data-i18n-title="btnMmlTip" title="Ctrl+Enter">
+        📋&nbsp; <span data-i18n="btnMml">Copy for PowerPoint (native equation)</span>
+        <small data-i18n="btnMmlSub">After copying: Ctrl + V on the slide – you get an editable Office equation.</small>
+      </button>
+      <div class="btnrow">
+        <button class="btn" id="btnTex">
+          📝&nbsp; <span data-i18n="btnTex">Copy LaTeX with $$ … $$</span>
+          <small data-i18n="btnTexSub">Newer M365 builds insert this directly as an equation.</small>
+        </button>
+        <button class="btn" id="btnPng">
+          🖼️&nbsp; <span data-i18n="btnPng">Copy PNG (image)</span>
+          <small data-i18n="btnPngSub">Fallback: looks like typeset LaTeX, but not editable.</small>
+        </button>
+      </div>
+      <button class="btn" id="btnDl">💾&nbsp; <span data-i18n="btnDl">Download PNG</span> <small data-i18n="btnDlSub">For backups or older Office versions.</small></button>
+    </div>
+  </section>
+</main>
+
 <section class="card libwrap">
-  <h2>📚 Formelbibliothek (Elektrotechnik)</h2>
+  <h2 data-i18n="libHead">📚 Formula library (electrical engineering)</h2>
   <div class="tabs" id="libTabs"></div>
   <div class="libgrid" id="libGrid"></div>
 </section>
 
 <div class="lowwrap lowcols">
   <section class="card">
-    <h2>🕘 Verlauf</h2>
+    <h2 data-i18n="histHead">🕘 History</h2>
     <div id="histlist"></div>
-    <div class="row"><button class="ghost" id="btnHistClear">Verlauf leeren</button></div>
+    <div class="row"><button class="ghost" id="btnHistClear" data-i18n="btnHistClear">Clear history</button></div>
   </section>
 
   <section class="card">
-    <h2>❓ So kommt die Formel in PowerPoint</h2>
+    <h2 data-i18n="helpHead">❓ How to get the formula into PowerPoint</h2>
     <details open>
-      <summary>Weg 1 · Native Formel (empfohlen)</summary>
-      <ol>
-        <li>Hier <b>„Für PowerPoint kopieren“</b> klicken (kopiert MathML).</li>
-        <li>In PowerPoint <kbd>Strg</kbd>+<kbd>V</kbd> auf die Folie → es entsteht eine <b>echte, editierbare Formel</b>.</li>
-        <li>Falls es als Text landet: <i>Start → Einfügen → Inhalte einfügen → MathML</i>.</li>
-      </ol>
+      <summary data-i18n="helpW1Title">Way 1 · Native equation (recommended)</summary>
+      <div data-i18n="helpW1Body"></div>
     </details>
     <details>
-      <summary>Weg 2 · LaTeX direkt (Microsoft 365)</summary>
-      <ul>
-        <li><b>„LaTeX mit $$ … $$ kopieren“</b> → in PowerPoint einfügen: neuere M365-Builds wandeln das automatisch in eine Formel um.</li>
-        <li>Oder in PowerPoint: <kbd>Alt</kbd>+<kbd>=</kbd> → im Formel-Menüband von <i>Unicode</i> auf <i>{}LaTeX</i> umstellen → Code einfügen → <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>=</kbd> (Konvertieren).</li>
-      </ul>
+      <summary data-i18n="helpW2Title">Way 2 · LaTeX directly (Microsoft 365)</summary>
+      <div data-i18n="helpW2Body"></div>
     </details>
     <details>
-      <summary>Weg 3 · Als Bild (Fallback)</summary>
-      <ul><li><b>„PNG kopieren“</b> → einfügen. Skaliert scharf, ist aber kein editierbares Formelobjekt mehr.</li></ul>
+      <summary data-i18n="helpW3Title">Way 3 · As an image (fallback)</summary>
+      <div data-i18n="helpW3Body"></div>
     </details>
     <details>
-      <summary>📸 Formeln aus Skript / Buch (OCR)</summary>
-      <ul>
-        <li><b>Integriert:</b> Screenshot kopieren (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → hier <kbd>Strg</kbd>+<kbd>V</kbd> → „Formel erkennen". Läuft lokal im Browser (TexTeller3); beim ersten Mal lädt er ~250&nbsp;MB Modell (Internet nötig), danach aus dem Cache.</li>
-        <li><b>Falls die KI zweifelhafte Ergebnisse liefert</b> (Handschrift, lange mehrzeilige Konstrukte): <a href="https://github.com/JhuoW/OpenMathpix" target="_blank" rel="noopener">OpenMathpix</a> (offline, gratis) – LaTeX landet in der Zwischenablage, hier einfach einfügen.</li>
-        <li><b>Weitere Alternativen:</b> <a href="https://mathpix.com" target="_blank" rel="noopener">Mathpix Snip</a> (sehr genau, Freemium), <a href="https://mathcheap.xyz" target="_blank" rel="noopener">mathcheap.xyz</a>, <a href="https://imagetolatex.com" target="_blank" rel="noopener">imagetolatex.com</a> (Web).</li>
-        <li>Tipp: Eingefügtes LaTeX mit <code>$…$</code>/<code>$$…$$</code> wird automatisch bereinigt.</li>
-      </ul>
+      <summary data-i18n="helpOcrTitle">📸 Formulas from scripts / books (OCR)</summary>
+      <div data-i18n="helpOcrBody"></div>
     </details>
     <details>
-      <summary>🔒 Datenschutz &amp; Offline</summary>
-      <ul><li>AutoMath läuft komplett lokal im Browser – kein Server, keine Übertragung. Formel und Verlauf bleiben auf diesem PC gespeichert.</li></ul>
+      <summary data-i18n="helpPrivTitle">🔒 Privacy &amp; offline</summary>
+      <div data-i18n="helpPrivBody"></div>
     </details>
   </section>
 </div>
 
-<footer>AutoMath v2 · einzelne HTML-Datei · Formeln offline, OCR im Browser (TexTeller3, Apache-2.0) · Rendering mit Temml (MathML)</footer>
+<footer data-i18n="footer">AutoMath v3 · single HTML file · equations offline, OCR in the browser (TexTeller3, Apache-2.0) · rendering with Temml (MathML)</footer>
 
 <div id="toast"></div>
 
@@ -698,13 +702,205 @@ body {
   const texEl = $("#tex"), previewEl = $("#preview"), errEl = $("#error"), toastEl = $("#toast");
   const S = { mml: "", tex: "", display: true };
 
+  /* ---------- i18n ---------- */
+  const LKEY = "automath.lang";
+  const I18N = {
+    en: {
+      docTitle: "AutoMath – Formula Workshop for PowerPoint",
+      headerTitle: "📐 AutoMath – Formula Workshop",
+      headerSub: "Paste a screenshot (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or type LaTeX → live preview → <kbd>Ctrl</kbd>+<kbd>V</kbd> into PowerPoint as a <b>native, editable equation</b>.",
+      ocrHead: "📸 Screenshot → equation (OCR, runs in your browser)",
+      thumbHint: "Paste a screenshot with <b>Ctrl + V</b> – recognition starts automatically.<br>Or click here to pick an image file. Frame the formula as tightly as possible.",
+      dropzoneTip: "Click or drop an image here",
+      btnOcr: "🔎\u00a0 Recognise formula",
+      btnOcrClear: "Remove image",
+      ocrNote: "Recognition uses the <b>TexTeller3</b> AI (Apache-2.0), running locally in your browser. The ~250&nbsp;MB model downloads once (internet needed the first time), afterwards it is served from the browser cache. Always double-check results against the original.",
+      stImageReady: "Image ready – click “Recognise formula”.",
+      toastShot: "📸 Screenshot detected – recognising …",
+      stLib: "Loading OCR library …",
+      stModel: "Loading AI model (~250 MB once, then browser cache) …",
+      stModelFile: "Loading AI model ({file}): {pct} % · overall {tot} %",
+      stModelReady: "Model ready – recognising formula …",
+      stRecognising: "Recognising formula … (may take a few seconds on CPU)",
+      stDone: "✓ Recognised and inserted into the editor – please double-check!",
+      stFailPrefix: "⚠ OCR failed: ",
+      stFailSuffix: " – internet needed (first download). Alternative: use OpenMathpix.",
+      toastRecognised: "✓ Formula recognised – please double-check against the original.",
+      editorHead: "LaTeX input",
+      texPh: "e.g.  F(s) = \\int_{0}^{\\infty} f(t)\\,e^{-st}\\,dt",
+      modeBlock: "Display mode",
+      modeInline: "Inline",
+      modeBlockTip: "Own line, large fractions – standard for slides",
+      modeInlineTip: "Within a line of text",
+      btnDemo: "Load example",
+      btnClear: "Clear",
+      previewHead: "Preview",
+      previewHint: "Your formula will appear here …",
+      btnMml: "Copy for PowerPoint (native equation)",
+      btnMmlSub: "After copying: Ctrl + V on the slide – you get an editable Office equation.",
+      btnMmlTip: "Ctrl+Enter",
+      btnTex: "Copy LaTeX with $$ … $$",
+      btnTexSub: "Newer M365 builds insert this directly as an equation.",
+      btnPng: "Copy PNG (image)",
+      btnPngSub: "Fallback: looks like typeset LaTeX, but not editable.",
+      btnDl: "Download PNG",
+      btnDlSub: "For backups or older Office versions.",
+      toastMml: "✓ Native equation copied – now press Ctrl + V in PowerPoint.",
+      toastTex: "✓ LaTeX ($$ … $$) copied – paste it into PowerPoint.",
+      toastPng: "✓ PNG copied to the clipboard.",
+      toastPngDl: "PNG downloaded (clipboard writes not supported).",
+      toastDl: "✓ PNG downloaded.",
+      needFormula: "Enter a formula first.",
+      copyFailed: "Copy failed – please select and copy the text manually.",
+      pngFail: "PNG failed: ",
+      dlFail: "Download failed: ",
+      libHead: "📚 Formula library (electrical engineering)",
+      histHead: "🕘 History",
+      histEmpty: "Nothing copied yet. Every copied formula lands here automatically.",
+      btnHistClear: "Clear history",
+      toastHistCleared: "History cleared.",
+      histLoadTip: "Click: load formula",
+      histDelTip: "Remove",
+      helpHead: "❓ How to get the formula into PowerPoint",
+      helpW1Title: "Way 1 · Native equation (recommended)",
+      helpW1Body: "<ol><li>Click <b>“Copy for PowerPoint”</b> here (copies MathML).</li><li>In PowerPoint, press <kbd>Ctrl</kbd>+<kbd>V</kbd> on the slide → you get a <b>real, editable equation</b>.</li><li>If it lands as text: <i>Home → Paste → Paste Special → MathML</i>.</li></ol>",
+      helpW2Title: "Way 2 · LaTeX directly (Microsoft 365)",
+      helpW2Body: "<ul><li><b>“Copy LaTeX with $$ … $$”</b> → paste into PowerPoint: newer M365 builds convert it automatically.</li><li>Or in PowerPoint: <kbd>Alt</kbd>+<kbd>=</kbd> → in the Equation ribbon switch <i>Unicode</i> to <i>{}LaTeX</i> → paste the code → <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>=</kbd> (Convert).</li></ul>",
+      helpW3Title: "Way 3 · As an image (fallback)",
+      helpW3Body: "<ul><li><b>“Copy PNG”</b> → paste. Scales sharply, but is no longer an editable equation object.</li></ul>",
+      helpOcrTitle: "📸 Formulas from scripts / books (OCR)",
+      helpOcrBody: "<ul><li><b>Built in:</b> copy a screenshot (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → press <kbd>Ctrl</kbd>+<kbd>V</kbd> here → recognition starts automatically. Runs locally in the browser (TexTeller3); the first use downloads ~250&nbsp;MB (internet needed), afterwards from cache.</li><li><b>If the AI gives doubtful results</b> (handwriting, long multi-line constructs): <a href=\"https://github.com/JhuoW/OpenMathpix\" target=\"_blank\" rel=\"noopener\">OpenMathpix</a> (offline, free) – the LaTeX lands in your clipboard, just paste it here.</li><li><b>Other alternatives:</b> <a href=\"https://mathpix.com\" target=\"_blank\" rel=\"noopener\">Mathpix Snip</a> (very accurate, freemium), <a href=\"https://mathcheap.xyz\" target=\"_blank\" rel=\"noopener\">mathcheap.xyz</a>, <a href=\"https://imagetolatex.com\" target=\"_blank\" rel=\"noopener\">imagetolatex.com</a> (web).</li><li>Tip: pasted LaTeX with <code>$…$</code>/<code>$$…$$</code> is cleaned automatically.</li></ul>",
+      helpPrivTitle: "🔒 Privacy & offline",
+      helpPrivBody: "<ul><li>AutoMath runs entirely locally in your browser – no server, no uploads. Formulas, history and the OCR model stay on this PC.</li></ul>",
+      footer: "AutoMath v3 · single HTML file · equations offline, OCR in the browser (TexTeller3, Apache-2.0) · rendering with Temml (MathML)",
+      errLatex: "⚠ LaTeX error: ",
+      errNoText: "No text recognised",
+      errImageRead: "Image could not be read",
+      errEmptyImage: "Empty image",
+      toastDelims: "Delimiters removed – LaTeX applied.",
+      errPngRender: "PNG rendering failed",
+      errPngCreate: "PNG creation failed",
+      chipTip: "Insert: ",
+      libTip: "Click: insert at the cursor position",
+      errMathml: "No MathML produced",
+    },
+    de: {
+      docTitle: "AutoMath – Formel-Werkstatt für PowerPoint",
+      headerTitle: "📐 AutoMath – Formel-Werkstatt",
+      headerSub: "Screenshot einfügen (<kbd>Strg</kbd>+<kbd>V</kbd>) oder LaTeX tippen → Live-Vorschau → <kbd>Strg</kbd>+<kbd>V</kbd> in PowerPoint als <b>native, editierbare Formel</b>.",
+      ocrHead: "📸 Screenshot → Formel (OCR, läuft im Browser)",
+      thumbHint: "Screenshot mit <b>Strg + V</b> einfügen – die Erkennung startet automatisch.<br>Alternativ: hier klicken und eine Bilddatei wählen. Formel möglichst eng umrahmen.",
+      dropzoneTip: "Klicken oder Bild hierher ziehen",
+      btnOcr: "🔎\u00a0 Formel erkennen",
+      btnOcrClear: "Bild entfernen",
+      ocrNote: "Erkennung mit der KI <b>TexTeller3</b> (Apache-2.0), direkt lokal im Browser. Erstmalig ~250&nbsp;MB Modell-Download, danach aus dem Browser-Cache – dafür braucht es beim ersten Mal Internet. Ergebnis immer kurz gegen das Original prüfen.",
+      stImageReady: "Bild bereit – „Formel erkennen“ klicken.",
+      toastShot: "📸 Screenshot erkannt – Erkennung läuft …",
+      stLib: "Lade OCR-Bibliothek …",
+      stModel: "Lade KI-Modell (einmalig ~250 MB, danach Browser-Cache) …",
+      stModelFile: "Lade KI-Modell ({file}): {pct} % · gesamt {tot} %",
+      stModelReady: "Modell bereit – Formel wird erkannt …",
+      stRecognising: "Formel wird erkannt … (auf der CPU kann das einige Sekunden dauern)",
+      stDone: "✓ Erkannt und in den Editor übernommen – bitte kurz prüfen!",
+      stFailPrefix: "⚠ OCR fehlgeschlagen: ",
+      stFailSuffix: " – Internet nötig (erster Download). Alternativ: OpenMathpix nutzen.",
+      toastRecognised: "✓ Formel erkannt – bitte kurz gegen das Original prüfen.",
+      editorHead: "LaTeX-Eingabe",
+      texPh: "z. B.  F(s) = \\int_{0}^{\\infty} f(t)\\,e^{-st}\\,dt",
+      modeBlock: "Anzeigeformel",
+      modeInline: "Inline",
+      modeBlockTip: "Eigene Zeile, große Brüche – Standard für Folien",
+      modeInlineTip: "Innerhalb einer Textzeile",
+      btnDemo: "Beispiel laden",
+      btnClear: "Leeren",
+      previewHead: "Vorschau",
+      previewHint: "Hier erscheint deine Formel …",
+      btnMml: "Für PowerPoint kopieren (native Formel)",
+      btnMmlSub: "Nach dem Kopieren: auf der Folie Strg + V – es entsteht eine editierbare Office-Formel.",
+      btnMmlTip: "Strg+Enter",
+      btnTex: "LaTeX mit $$ … $$ kopieren",
+      btnTexSub: "Neuere M365-Builds fügen das direkt als Formel ein.",
+      btnPng: "PNG kopieren (Bild)",
+      btnPngSub: "Fallback: sieht wie gesetztes LaTeX aus, aber nicht editierbar.",
+      btnDl: "PNG herunterladen",
+      btnDlSub: "Für Sicherungskopien oder alte Office-Versionen.",
+      toastMml: "✓ Native Formel kopiert – jetzt in PowerPoint Strg + V drücken.",
+      toastTex: "✓ LaTeX ($$ … $$) kopiert – in PowerPoint einfügen.",
+      toastPng: "✓ PNG in die Zwischenablage kopiert.",
+      toastPngDl: "PNG heruntergeladen (Zwischenablage wird nicht unterstützt).",
+      toastDl: "✓ PNG heruntergeladen.",
+      needFormula: "Erst eine Formel eingeben.",
+      copyFailed: "Kopieren fehlgeschlagen – bitte Text manuell markieren.",
+      pngFail: "PNG fehlgeschlagen: ",
+      dlFail: "Download fehlgeschlagen: ",
+      libHead: "📚 Formelbibliothek (Elektrotechnik)",
+      histHead: "🕘 Verlauf",
+      histEmpty: "Noch nichts kopiert. Jede kopierte Formel landet automatisch hier.",
+      btnHistClear: "Verlauf leeren",
+      toastHistCleared: "Verlauf geleert.",
+      histLoadTip: "Klick: Formel laden",
+      histDelTip: "Entfernen",
+      helpHead: "❓ So kommt die Formel in PowerPoint",
+      helpW1Title: "Weg 1 · Native Formel (empfohlen)",
+      helpW1Body: "<ol><li>Hier <b>„Für PowerPoint kopieren“</b> klicken (kopiert MathML).</li><li>In PowerPoint <kbd>Strg</kbd>+<kbd>V</kbd> auf die Folie → es entsteht eine <b>echte, editierbare Formel</b>.</li><li>Falls es als Text landet: <i>Start → Einfügen → Inhalte einfügen → MathML</i>.</li></ol>",
+      helpW2Title: "Weg 2 · LaTeX direkt (Microsoft 365)",
+      helpW2Body: "<ul><li><b>„LaTeX mit $$ … $$ kopieren“</b> → in PowerPoint einfügen: neuere M365-Builds wandeln das automatisch in eine Formel um.</li><li>Oder in PowerPoint: <kbd>Alt</kbd>+<kbd>=</kbd> → im Formel-Menüband von <i>Unicode</i> auf <i>{}LaTeX</i> umstellen → Code einfügen → <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>=</kbd> (Konvertieren).</li></ul>",
+      helpW3Title: "Weg 3 · Als Bild (Fallback)",
+      helpW3Body: "<ul><li><b>„PNG kopieren“</b> → einfügen. Skaliert scharf, ist aber kein editierbares Formelobjekt mehr.</li></ul>",
+      helpOcrTitle: "📸 Formeln aus Skript / Buch (OCR)",
+      helpOcrBody: "<ul><li><b>Integriert:</b> Screenshot kopieren (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>) → hier <kbd>Strg</kbd>+<kbd>V</kbd> → Erkennung startet automatisch. Läuft lokal im Browser (TexTeller3); beim ersten Mal lädt er ~250&nbsp;MB Modell (Internet nötig), danach aus dem Cache.</li><li><b>Falls die KI zweifelhafte Ergebnisse liefert</b> (Handschrift, lange mehrzeilige Konstrukte): <a href=\"https://github.com/JhuoW/OpenMathpix\" target=\"_blank\" rel=\"noopener\">OpenMathpix</a> (offline, gratis) – das LaTeX landet in der Zwischenablage, hier einfach einfügen.</li><li><b>Weitere Alternativen:</b> <a href=\"https://mathpix.com\" target=\"_blank\" rel=\"noopener\">Mathpix Snip</a> (sehr genau, Freemium), <a href=\"https://mathcheap.xyz\" target=\"_blank\" rel=\"noopener\">mathcheap.xyz</a>, <a href=\"https://imagetolatex.com\" target=\"_blank\" rel=\"noopener\">imagetolatex.com</a> (Web).</li><li>Tipp: Eingefügtes LaTeX mit <code>$…$</code>/<code>$$…$$</code> wird automatisch bereinigt.</li></ul>",
+      helpPrivTitle: "🔒 Datenschutz & Offline",
+      helpPrivBody: "<ul><li>AutoMath läuft komplett lokal im Browser – kein Server, keine Übertragung. Formeln, Verlauf und OCR-Modell bleiben auf diesem PC.</li></ul>",
+      footer: "AutoMath v3 · einzelne HTML-Datei · Formeln offline, OCR im Browser (TexTeller3, Apache-2.0) · Rendering mit Temml (MathML)",
+      errLatex: "⚠ LaTeX-Fehler: ",
+      errNoText: "Kein Text erkannt",
+      errImageRead: "Bild konnte nicht gelesen werden",
+      errEmptyImage: "Leeres Bild",
+      toastDelims: "Delimiter entfernt – LaTeX übernommen.",
+      errPngRender: "PNG-Rendering fehlgeschlagen",
+      errPngCreate: "PNG-Erzeugung fehlgeschlagen",
+      chipTip: "Einfügen: ",
+      libTip: "Klick: an der Cursorposition einfügen",
+      errMathml: "Kein MathML erzeugt",
+    },
+  };
+  let LANG = "en";
+  try {
+    const saved = localStorage.getItem(LKEY);
+    if (saved === "de" || saved === "en") LANG = saved;
+  } catch (e) {}
+  function fmt(s, o) { return s.replace(/\{(\w+)\}/g, (m, k) => (o && o[k] !== undefined ? o[k] : m)); }
+  function t(key) {
+    const d = I18N[LANG] || I18N.en;
+    return d[key] !== undefined ? d[key] : (I18N.en[key] !== undefined ? I18N.en[key] : key);
+  }
+  function applyLang() {
+    document.documentElement.lang = LANG;
+    document.title = t("docTitle");
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.innerHTML = t(el.getAttribute("data-i18n")); });
+    document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = t(el.getAttribute("data-i18n-ph")); });
+    document.querySelectorAll("[data-i18n-title]").forEach((el) => { el.title = t(el.getAttribute("data-i18n-title")); });
+    $("#langEn").classList.toggle("on", LANG === "en");
+    $("#langDe").classList.toggle("on", LANG === "de");
+    renderPalette();
+    renderLib();
+    renderHist();
+  }
+  function setLang(l) {
+    LANG = l;
+    try { localStorage.setItem(LKEY, l); } catch (e) {}
+    applyLang();
+  }
+  $("#langEn").addEventListener("click", () => setLang("en"));
+  $("#langDe").addEventListener("click", () => setLang("de"));
+
   /* ---------- Helpers ---------- */
-  function stripDelims(t) {
-    t = t.trim();
+  function stripDelims(txt) {
+    txt = txt.trim();
     let m;
-    if ((m = t.match(/^\$\$([\s\S]*)\$\$$/)) || (m = t.match(/^\\\[([\s\S]*)\\\]$/))) return m[1].trim();
-    if ((m = t.match(/^\$([\s\S]*)\$$/)) || (m = t.match(/^\\\(([\s\S]*)\\\)$/))) return m[1].trim();
-    return t;
+    if ((m = txt.match(/^\$\$([\s\S]*)\$\$$/)) || (m = txt.match(/^\\\[([\s\S]*)\\\]$/))) return m[1].trim();
+    if ((m = txt.match(/^\$([\s\S]*)\$$/)) || (m = txt.match(/^\\\(([\s\S]*)\\\)$/))) return m[1].trim();
+    return txt;
   }
   function renderToString(tex, display) {
     return temml.renderToString(tex, { displayMode: display, xml: true, throwOnError: true });
@@ -727,7 +923,7 @@ body {
     const tex = stripDelims(texEl.value);
     S.tex = tex;
     if (!tex) {
-      previewEl.innerHTML = '<span class="hint">Hier erscheint deine Formel …</span>';
+      previewEl.innerHTML = '<span class="hint">' + t("previewHint") + "</span>";
       errEl.hidden = true; S.mml = ""; return;
     }
     try {
@@ -736,7 +932,7 @@ body {
       previewEl.innerHTML = raw;          // Vorschau mit CSS-Klassen
       errEl.hidden = true;
     } catch (e) {
-      errEl.textContent = "⚠ LaTeX-Fehler: " + (e && e.message ? e.message : e);
+      errEl.textContent = t("errLatex") + (e && e.message ? e.message : e);
       errEl.hidden = false;
     }
   }
@@ -760,13 +956,13 @@ body {
       let ok = false;
       try { ok = document.execCommand("copy"); } catch (e2) {}
       ta.remove();
-      toast(ok ? msg : "Kopieren fehlgeschlagen – bitte Text manuell markieren.", ok);
+      toast(ok ? msg : t("copyFailed"), ok);
     }
   }
   async function copyPngBlob() {
-    if (!S.mml) throw new Error("Keine Formel vorhanden");
+    if (!S.mml) throw new Error(t("errMathml"));
     const node = previewEl.querySelector("math");
-    if (!node) throw new Error("Keine Formel vorhanden");
+    if (!node) throw new Error(t("errMathml"));
     const box = node.getBoundingClientRect();
     const scale = 3, pad = 6 * scale;
     const w = Math.ceil(box.width * scale) + 2 * pad, h = Math.ceil(box.height * scale) + 2 * pad;
@@ -777,7 +973,7 @@ body {
       S.mml + "</div></foreignObject></svg>";
     const img = new Image();
     await new Promise((res, rej) => {
-      img.onload = res; img.onerror = () => rej(new Error("PNG-Rendering fehlgeschlagen"));
+      img.onload = res; img.onerror = () => rej(new Error(t("errPngRender")));
       img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     });
     const cv = document.createElement("canvas");
@@ -785,20 +981,20 @@ body {
     const ctx = cv.getContext("2d");
     ctx.drawImage(img, 0, 0);
     const blob = await new Promise((res) => cv.toBlob(res, "image/png"));
-    if (!blob) throw new Error("PNG-Erzeugung fehlgeschlagen");
+    if (!blob) throw new Error(t("errPngCreate"));
     return blob;
   }
 
   /* ---------- Buttons ---------- */
   async function afterCopy() { if (S.tex) addHistory(S.tex, S.display); }
   $("#btnMml").addEventListener("click", async () => {
-    if (!S.mml) return toast("Erst eine Formel eingeben.", false);
-    await copyText(S.mml, "✓ Native Formel kopiert – jetzt in PowerPoint Strg + V drücken.");
+    if (!S.mml) return toast(t("needFormula"), false);
+    await copyText(S.mml, t("toastMml"));
     afterCopy();
   });
   $("#btnTex").addEventListener("click", async () => {
-    if (!S.tex) return toast("Erst eine Formel eingeben.", false);
-    await copyText("$$" + S.tex + "$$", "✓ LaTeX ($$ … $$) kopiert – in PowerPoint einfügen.");
+    if (!S.tex) return toast(t("needFormula"), false);
+    await copyText("$$" + S.tex + "$$", t("toastTex"));
     afterCopy();
   });
   $("#btnPng").addEventListener("click", async () => {
@@ -806,17 +1002,17 @@ body {
       const blob = await copyPngBlob();
       if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
         await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-        toast("✓ PNG in die Zwischenablage kopiert.");
+        toast(t("toastPng"));
       } else {
         downloadPng(blob);
-        toast("PNG heruntergeladen (Zwischenablage wird nicht unterstützt).");
+        toast(t("toastPngDl"));
       }
       afterCopy();
-    } catch (e) { toast("PNG fehlgeschlagen: " + (e && e.message ? e.message : e), false); }
+    } catch (e) { toast(t("pngFail") + (e && e.message ? e.message : e), false); }
   });
   $("#btnDl").addEventListener("click", async () => {
-    try { downloadPng(await copyPngBlob()); toast("✓ PNG heruntergeladen."); }
-    catch (e) { toast("Download fehlgeschlagen: " + (e && e.message ? e.message : e), false); }
+    try { downloadPng(await copyPngBlob()); toast(t("toastDl")); }
+    catch (e) { toast(t("dlFail") + (e && e.message ? e.message : e), false); }
   });
   function downloadPng(blob) {
     const a = document.createElement("a");
@@ -868,107 +1064,112 @@ body {
     "e^{j} ", "\\omega", "\\varphi", "\\pi", "\\tau", "\\Omega", "\\mu", "\\infty",
     "\\cdot", "\\pm", "\\Rightarrow", "\\quad", "\\,", "\\text{}"
   ];
-  const pal = $("#palette");
-  PALETTE.forEach((tok) => {
-    const b = document.createElement("button");
-    b.className = "chip";
-    b.textContent = tok;
-    b.title = "Einfügen: " + tok;
-    b.addEventListener("click", () => insertAtCursor(tok, false));
-    pal.appendChild(b);
-  });
+  function renderPalette() {
+    const pal = $("#palette");
+    pal.innerHTML = "";
+    PALETTE.forEach((tok) => {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = tok;
+      b.title = t("chipTip") + tok;
+      b.addEventListener("click", () => insertAtCursor(tok, false));
+      pal.appendChild(b);
+    });
+  }
 
   /* ---------- Formelbibliothek ---------- */
   const LIB = [
-    { tab: "Grundlagen", items: [
-      ["Ohmsches Gesetz", "R = \\frac{U}{I}"],
-      ["Leistung", "P = U \\cdot I = \\frac{U^{2}}{R}"],
-      ["Arbeit / Energie", "W = \\int_{t_1}^{t_2} p(t)\\,dt"],
-      ["Knotensatz", "\\sum_{k} i_{k}(t) = 0"],
-      ["Maschensatz", "\\sum_{k} u_{k}(t) = 0"],
-      ["Spannungsteiler", "u_{2}(t) = \\frac{R_{2}}{R_{1} + R_{2}}\\,u_{0}(t)"],
-      ["Reihenschaltung", "R_{\\mathrm{ges}} = \\sum_{k} R_{k}"],
-      ["Parallelschaltung", "\\frac{1}{R_{\\mathrm{ges}}} = \\sum_{k} \\frac{1}{R_{k}}"],
-      ["Kondensator", "i_{C}(t) = C\\,\\frac{du_{C}(t)}{dt}"],
-      ["Spule", "u_{L}(t) = L\\,\\frac{di_{L}(t)}{dt}"],
-      ["RC-Einschalten", "u_{C}(t) = U_{0}\\left(1 - e^{-t/\\tau}\\right), \\quad \\tau = RC"],
-      ["RL-Ausschalten", "i_{L}(t) = I_{0}\\,e^{-t/\\tau}, \\quad \\tau = \\frac{L}{R}"],
-      ["Feldenergie", "W_{C} = \\frac{1}{2}C\\,u^{2}, \\qquad W_{L} = \\frac{1}{2}L\\,i^{2}"],
+    { tab: ["Grundlagen", "Fundamentals"], items: [
+      ["Ohmsches Gesetz", "Ohm's law", "R = \\frac{U}{I}"],
+      ["Leistung", "Power", "P = U \\cdot I = \\frac{U^{2}}{R}"],
+      ["Arbeit / Energie", "Work / energy", "W = \\int_{t_1}^{t_2} p(t)\\,dt"],
+      ["Knotensatz", "Kirchhoff's current law", "\\sum_{k} i_{k}(t) = 0"],
+      ["Maschensatz", "Kirchhoff's voltage law", "\\sum_{k} u_{k}(t) = 0"],
+      ["Spannungsteiler", "Voltage divider", "u_{2}(t) = \\frac{R_{2}}{R_{1} + R_{2}}\\,u_{0}(t)"],
+      ["Reihenschaltung", "Series connection", "R_{\\mathrm{ges}} = \\sum_{k} R_{k}"],
+      ["Parallelschaltung", "Parallel connection", "\\frac{1}{R_{\\mathrm{ges}}} = \\sum_{k} \\frac{1}{R_{k}}"],
+      ["Kondensator", "Capacitor", "i_{C}(t) = C\\,\\frac{du_{C}(t)}{dt}"],
+      ["Spule", "Inductor", "u_{L}(t) = L\\,\\frac{di_{L}(t)}{dt}"],
+      ["RC-Einschalten", "RC switch-on", "u_{C}(t) = U_{0}\\left(1 - e^{-t/\\tau}\\right), \\quad \\tau = RC"],
+      ["RL-Ausschalten", "RL switch-off", "i_{L}(t) = I_{0}\\,e^{-t/\\tau}, \\quad \\tau = \\frac{L}{R}"],
+      ["Feldenergie", "Field energy", "W_{C} = \\frac{1}{2}C\\,u^{2}, \\qquad W_{L} = \\frac{1}{2}L\\,i^{2}"],
     ]},
-    { tab: "Zeiger & komplexe Zahlen", items: [
-      ["Zeiger", "\\underline{U} = \\hat{U}\\,e^{j\\varphi}"],
-      ["Momentanwert", "u(t) = \\hat{U}\\,\\cos(\\omega t + \\varphi)"],
-      ["Impedanz", "\\underline{Z} = R + jX = |\\underline{Z}|\\,e^{j\\varphi_{Z}}"],
-      ["Betrag & Phase", "|\\underline{Z}| = \\sqrt{R^{2} + X^{2}}, \\quad \\varphi_{Z} = \\arctan\\frac{X}{R}"],
-      ["Euler-Formel", "e^{j\\varphi} = \\cos\\varphi + j\\sin\\varphi"],
-      ["Impedanz RLC-Reihe", "\\underline{Z} = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right)"],
-      ["Resonanz", "\\omega_{0} = \\frac{1}{\\sqrt{LC}}"],
-      ["Komplexe Leistung", "\\underline{S} = \\underline{U}\\,\\underline{I}^{*} = P + jQ"],
-      ["Wirkfaktor", "\\cos\\varphi = \\frac{P}{|\\underline{S}|}"],
+    { tab: ["Zeiger & komplexe Zahlen", "Phasors & complex numbers"], items: [
+      ["Zeiger", "Phasor", "\\underline{U} = \\hat{U}\\,e^{j\\varphi}"],
+      ["Momentanwert", "Instantaneous value", "u(t) = \\hat{U}\\,\\cos(\\omega t + \\varphi)"],
+      ["Impedanz", "Impedance", "\\underline{Z} = R + jX = |\\underline{Z}|\\,e^{j\\varphi_{Z}}"],
+      ["Betrag & Phase", "Magnitude & phase", "|\\underline{Z}| = \\sqrt{R^{2} + X^{2}}, \\quad \\varphi_{Z} = \\arctan\\frac{X}{R}"],
+      ["Euler-Formel", "Euler's formula", "e^{j\\varphi} = \\cos\\varphi + j\\sin\\varphi"],
+      ["Impedanz RLC-Reihe", "RLC series impedance", "\\underline{Z} = R + j\\left(\\omega L - \\frac{1}{\\omega C}\\right)"],
+      ["Resonanz", "Resonance", "\\omega_{0} = \\frac{1}{\\sqrt{LC}}"],
+      ["Komplexe Leistung", "Complex power", "\\underline{S} = \\underline{U}\\,\\underline{I}^{*} = P + jQ"],
+      ["Wirkfaktor", "Power factor", "\\cos\\varphi = \\frac{P}{|\\underline{S}|}"],
     ]},
-    { tab: "Laplace", items: [
-      ["Definition", "F(s) = \\mathcal{L}\\{f(t)\\} = \\int_{0}^{\\infty} f(t)\\,e^{-st}\\,dt"],
-      ["Rücktransformation", "f(t) = \\mathcal{L}^{-1}\\{F(s)\\} = \\frac{1}{2\\pi j}\\int_{\\sigma - j\\infty}^{\\sigma + j\\infty} F(s)\\,e^{st}\\,ds"],
-      ["Ableitungssatz", "\\mathcal{L}\\left\\{ \\frac{df(t)}{dt} \\right\\} = s\\,F(s) - f(0)"],
-      ["Integrationssatz", "\\mathcal{L}\\left\\{ \\int_{0}^{t} f(\\tau)\\,d\\tau \\right\\} = \\frac{F(s)}{s}"],
-      ["Verschiebungssatz", "\\mathcal{L}\\left\\{ f(t - t_{0})\\,\\varepsilon(t - t_{0}) \\right\\} = F(s)\\,e^{-s\\,t_{0}}"],
-      ["Ähnlichkeitssatz", "\\mathcal{L}\\{f(a\\,t)\\} = \\frac{1}{a}\\,F\\!\\left(\\frac{s}{a}\\right)"],
-      ["Übertragungsfunktion", "H(s) = \\frac{Y(s)}{X(s)}"],
-      ["Sprungantwort", "y(t) = \\mathcal{L}^{-1}\\left\\{ \\frac{H(s)}{s} \\right\\}"],
-      ["Korrespondenzen", "\\varepsilon(t) \\;\\widehat{=}\\; \\frac{1}{s}, \\quad e^{-at} \\;\\widehat{=}\\; \\frac{1}{s+a}, \\quad t \\;\\widehat{=}\\; \\frac{1}{s^{2}}"],
-      ["Harmonische", "\\sin(\\omega t) \\;\\widehat{=}\\; \\frac{\\omega}{s^{2} + \\omega^{2}}, \\quad \\cos(\\omega t) \\;\\widehat{=}\\; \\frac{s}{s^{2} + \\omega^{2}}"],
-      ["Partialbruch", "F(s) = \\sum_{k} \\frac{A_{k}}{s - s_{k}}"],
-      ["RC-Tiefpass", "H(s) = \\frac{1}{1 + s\\,RC}"],
+    { tab: ["Laplace", "Laplace"], items: [
+      ["Definition", "Definition", "F(s) = \\mathcal{L}\\{f(t)\\} = \\int_{0}^{\\infty} f(t)\\,e^{-st}\\,dt"],
+      ["Rücktransformation", "Inverse transform", "f(t) = \\mathcal{L}^{-1}\\{F(s)\\} = \\frac{1}{2\\pi j}\\int_{\\sigma - j\\infty}^{\\sigma + j\\infty} F(s)\\,e^{st}\\,ds"],
+      ["Ableitungssatz", "Derivative rule", "\\mathcal{L}\\left\\{ \\frac{df(t)}{dt} \\right\\} = s\\,F(s) - f(0)"],
+      ["Integrationssatz", "Integration rule", "\\mathcal{L}\\left\\{ \\int_{0}^{t} f(\\tau)\\,d\\tau \\right\\} = \\frac{F(s)}{s}"],
+      ["Verschiebungssatz", "Shift rule", "\\mathcal{L}\\left\\{ f(t - t_{0})\\,\\varepsilon(t - t_{0}) \\right\\} = F(s)\\,e^{-s\\,t_{0}}"],
+      ["Ähnlichkeitssatz", "Scaling rule", "\\mathcal{L}\\{f(a\\,t)\\} = \\frac{1}{a}\\,F\\!\\left(\\frac{s}{a}\\right)"],
+      ["Übertragungsfunktion", "Transfer function", "H(s) = \\frac{Y(s)}{X(s)}"],
+      ["Sprungantwort", "Step response", "y(t) = \\mathcal{L}^{-1}\\left\\{ \\frac{H(s)}{s} \\right\\}"],
+      ["Korrespondenzen", "Correspondences", "\\varepsilon(t) \\;\\widehat{=}\\; \\frac{1}{s}, \\quad e^{-at} \\;\\widehat{=}\\; \\frac{1}{s+a}, \\quad t \\;\\widehat{=}\\; \\frac{1}{s^{2}}"],
+      ["Harmonische", "Harmonics", "\\sin(\\omega t) \\;\\widehat{=}\\; \\frac{\\omega}{s^{2} + \\omega^{2}}, \\quad \\cos(\\omega t) \\;\\widehat{=}\\; \\frac{s}{s^{2} + \\omega^{2}}"],
+      ["Partialbruch", "Partial fractions", "F(s) = \\sum_{k} \\frac{A_{k}}{s - s_{k}}"],
+      ["RC-Tiefpass", "RC low-pass", "H(s) = \\frac{1}{1 + s\\,RC}"],
     ]},
-    { tab: "Fourier", items: [
-      ["Fourier-Reihe", "f(t) = \\frac{a_{0}}{2} + \\sum_{k=1}^{\\infty} \\left( a_{k}\\cos(k\\omega_{0}t) + b_{k}\\sin(k\\omega_{0}t) \\right)"],
-      ["Koeffizienten", "a_{k} = \\frac{2}{T}\\int_{0}^{T} f(t)\\cos(k\\omega_{0}t)\\,dt, \\quad b_{k} = \\frac{2}{T}\\int_{0}^{T} f(t)\\sin(k\\omega_{0}t)\\,dt"],
-      ["Transformation", "F(j\\omega) = \\int_{-\\infty}^{\\infty} f(t)\\,e^{-j\\omega t}\\,dt"],
-      ["Rücktransformation", "f(t) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} F(j\\omega)\\,e^{j\\omega t}\\,d\\omega"],
-      ["Rechteckimpuls", "\\mathrm{rect}\\!\\left(\\frac{t}{\\tau}\\right) \\;\\widehat{=}\\; \\tau\\,\\mathrm{si}\\!\\left(\\frac{\\omega\\tau}{2}\\right)"],
+    { tab: ["Fourier", "Fourier"], items: [
+      ["Fourier-Reihe", "Fourier series", "f(t) = \\frac{a_{0}}{2} + \\sum_{k=1}^{\\infty} \\left( a_{k}\\cos(k\\omega_{0}t) + b_{k}\\sin(k\\omega_{0}t) \\right)"],
+      ["Koeffizienten", "Coefficients", "a_{k} = \\frac{2}{T}\\int_{0}^{T} f(t)\\cos(k\\omega_{0}t)\\,dt, \\quad b_{k} = \\frac{2}{T}\\int_{0}^{T} f(t)\\sin(k\\omega_{0}t)\\,dt"],
+      ["Transformation", "Transform", "F(j\\omega) = \\int_{-\\infty}^{\\infty} f(t)\\,e^{-j\\omega t}\\,dt"],
+      ["Rücktransformation", "Inverse transform", "f(t) = \\frac{1}{2\\pi}\\int_{-\\infty}^{\\infty} F(j\\omega)\\,e^{j\\omega t}\\,d\\omega"],
+      ["Rechteckimpuls", "Rectangular pulse", "\\mathrm{rect}\\!\\left(\\frac{t}{\\tau}\\right) \\;\\widehat{=}\\; \\tau\\,\\mathrm{si}\\!\\left(\\frac{\\omega\\tau}{2}\\right)"],
     ]},
-    { tab: "DGL & Systeme", items: [
-      ["Lineare DGL 2. Ordnung", "a_{2}\\ddot{y} + a_{1}\\dot{y} + a_{0}\\,y = b_{0}\\,x"],
-      ["Charakteristisches Polynom", "a_{2}\\lambda^{2} + a_{1}\\lambda + a_{0} = 0"],
-      ["Homogene Lösung", "y_{h}(t) = K_{1}e^{\\lambda_{1}t} + K_{2}e^{\\lambda_{2}t}"],
-      ["Faltung", "y(t) = \\int_{0}^{t} g(\\tau)\\,x(t - \\tau)\\,d\\tau"],
-      ["Zustandsraum", "\\dot{\\mathbf{x}}(t) = \\mathbf{A}\\,\\mathbf{x}(t) + \\mathbf{b}\\,u(t), \\qquad y(t) = \\mathbf{c}^{T}\\mathbf{x}(t) + d\\,u(t)"],
-      ["Sprungfunktion", "\\varepsilon(t) = \\begin{cases} 0, & t < 0 \\\\ 1, & t \\ge 0 \\end{cases}"],
+    { tab: ["DGL & Systeme", "ODEs & systems"], items: [
+      ["Lineare DGL 2. Ordnung", "Linear 2nd-order ODE", "a_{2}\\ddot{y} + a_{1}\\dot{y} + a_{0}\\,y = b_{0}\\,x"],
+      ["Charakteristisches Polynom", "Characteristic polynomial", "a_{2}\\lambda^{2} + a_{1}\\lambda + a_{0} = 0"],
+      ["Homogene Lösung", "Homogeneous solution", "y_{h}(t) = K_{1}e^{\\lambda_{1}t} + K_{2}e^{\\lambda_{2}t}"],
+      ["Faltung", "Convolution", "y(t) = \\int_{0}^{t} g(\\tau)\\,x(t - \\tau)\\,d\\tau"],
+      ["Zustandsraum", "State space", "\\dot{\\mathbf{x}}(t) = \\mathbf{A}\\,\\mathbf{x}(t) + \\mathbf{b}\\,u(t), \\qquad y(t) = \\mathbf{c}^{T}\\mathbf{x}(t) + d\\,u(t)"],
+      ["Sprungfunktion", "Step function", "\\varepsilon(t) = \\begin{cases} 0, & t < 0 \\\\ 1, & t \\ge 0 \\end{cases}"],
     ]},
-    { tab: "Matrizen & Felder", items: [
-      ["LGS", "\\begin{pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} \\end{pmatrix} \\begin{pmatrix} x_{1} \\\\ x_{2} \\end{pmatrix} = \\begin{pmatrix} b_{1} \\\\ b_{2} \\end{pmatrix}"],
-      ["Determinante", "\\det(\\mathbf{A}) = \\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix} = ad - bc"],
-      ["Kreuzprodukt", "\\vec{a} \\times \\vec{b}"],
-      ["Maxwell · Gauß", "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\varepsilon}, \\qquad \\nabla \\cdot \\vec{B} = 0"],
-      ["Maxwell · Wirbel", "\\nabla \\times \\vec{E} = -\\frac{\\partial \\vec{B}}{\\partial t}, \\qquad \\nabla \\times \\vec{B} = \\mu\\,\\vec{J}"],
-      ["Lorentzkraft", "\\vec{F} = q\\left(\\vec{E} + \\vec{v} \\times \\vec{B}\\right)"],
-      ["Plattenkondensator", "C = \\varepsilon\\,\\frac{A}{d}"],
+    { tab: ["Matrizen & Felder", "Matrices & fields"], items: [
+      ["LGS", "Linear system", "\\begin{pmatrix} a_{11} & a_{12} \\\\ a_{21} & a_{22} \\end{pmatrix} \\begin{pmatrix} x_{1} \\\\ x_{2} \\end{pmatrix} = \\begin{pmatrix} b_{1} \\\\ b_{2} \\end{pmatrix}"],
+      ["Determinante", "Determinant", "\\det(\\mathbf{A}) = \\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix} = ad - bc"],
+      ["Kreuzprodukt", "Cross product", "\\vec{a} \\times \\vec{b}"],
+      ["Maxwell · Gauß", "Maxwell · Gauss's law", "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\varepsilon}, \\qquad \\nabla \\cdot \\vec{B} = 0"],
+      ["Maxwell · Wirbel", "Maxwell · curl", "\\nabla \\times \\vec{E} = -\\frac{\\partial \\vec{B}}{\\partial t}, \\qquad \\nabla \\times \\vec{B} = \\mu\\,\\vec{J}"],
+      ["Lorentzkraft", "Lorentz force", "\\vec{F} = q\\left(\\vec{E} + \\vec{v} \\times \\vec{B}\\right)"],
+      ["Plattenkondensator", "Parallel-plate capacitor", "C = \\varepsilon\\,\\frac{A}{d}"],
     ]},
-    { tab: "Struktur", items: [
-      ["Mehrzeilig (aligned)", "\\begin{aligned} u_{L}(t) &= L\\,\\frac{di(t)}{dt} \\\\ &= L\\,\\frac{d}{dt}\\left( \\hat{I}\\sin(\\omega t) \\right) \\end{aligned}"],
-      ["Einheiten", "R = 1{,}5\\,\\mathrm{k\\Omega}"],
-      ["Text in Formel", "f(t) = 0 \\quad \\text{für } t < 0"],
-      ["Lange Brüche", "\\frac{\\frac{a}{b}}{\\frac{c}{d}}"],
+    { tab: ["Struktur", "Structure"], items: [
+      ["Mehrzeilig (aligned)", "Multi-line (aligned)", "\\begin{aligned} u_{L}(t) &= L\\,\\frac{di(t)}{dt} \\\\ &= L\\,\\frac{d}{dt}\\left( \\hat{I}\\sin(\\omega t) \\right) \\end{aligned}"],
+      ["Einheiten", "Units", "R = 1{,}5\\,\\mathrm{k\\Omega}"],
+      ["Text in Formel", "Text in formula", "f(t) = 0 \\quad \\text{für } t < 0"],
+      ["Lange Brüche", "Nested fractions", "\\frac{\\frac{a}{b}}{\\frac{c}{d}}"],
     ]},
   ];
-  const DEMO = LIB[2].items[0][1]; // Laplace-Definition
+  const DEMO = LIB[2].items[0][2]; // Laplace-Definition
 
   let activeTab = 0;
   const libTabs = $("#libTabs"), libGrid = $("#libGrid");
   function renderLib() {
+    const li = LANG === "de" ? 0 : 1;
     libTabs.innerHTML = "";
     LIB.forEach((g, i) => {
       const b = document.createElement("button");
-      b.textContent = g.tab;
+      b.textContent = g.tab[li];
       b.className = i === activeTab ? "on" : "";
       b.addEventListener("click", () => { activeTab = i; renderLib(); });
       libTabs.appendChild(b);
     });
     libGrid.innerHTML = "";
-    LIB[activeTab].items.forEach(([name, tex]) => {
+    LIB[activeTab].items.forEach((item) => {
+      const name = item[li], tex = item[2];
       const d = document.createElement("div");
       d.className = "libitem";
-      d.title = tex + "\n\nKlick: einfügen an der Cursorposition";
+      d.title = tex + "\n\n" + t("libTip");
       const m = document.createElement("div");
       m.className = "m";
       try { m.innerHTML = renderToString(tex, false); } catch (e) { m.textContent = tex; }
@@ -996,25 +1197,26 @@ body {
     const h = loadHist();
     list.innerHTML = "";
     if (!h.length) {
-      list.innerHTML = '<div style="color:#9ca3af;font-size:13px">Noch nichts kopiert. Jede kopierte Formel landet automatisch hier.</div>';
+      list.innerHTML = '<div style="color:#9ca3af;font-size:13px">' + t("histEmpty") + "</div>";
       return;
     }
+    const locale = LANG === "de" ? "de-DE" : "en-GB";
     h.forEach((item, idx) => {
       const d = document.createElement("div");
       d.className = "hitem";
       const m = document.createElement("div");
       m.className = "m";
       try { m.innerHTML = renderToString(item.tex, false); } catch (e) { m.textContent = item.tex; }
-      const t = document.createElement("time");
-      t.textContent = new Date(item.ts).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+      const time = document.createElement("time");
+      time.textContent = new Date(item.ts).toLocaleString(locale, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
       const del = document.createElement("button");
-      del.className = "del"; del.textContent = "✕"; del.title = "Entfernen";
+      del.className = "del"; del.textContent = "✕"; del.title = t("histDelTip");
       del.addEventListener("click", (e) => {
         e.stopPropagation();
         const rest = loadHist(); rest.splice(idx, 1); saveHist(rest); renderHist();
       });
-      d.appendChild(m); d.appendChild(t); d.appendChild(del);
-      d.title = "Klick: Formel laden";
+      d.appendChild(m); d.appendChild(time); d.appendChild(del);
+      d.title = t("histLoadTip");
       d.addEventListener("click", () => {
         texEl.value = item.tex;
         setMode(!!item.display);
@@ -1023,7 +1225,7 @@ body {
       list.appendChild(d);
     });
   }
-  $("#btnHistClear").addEventListener("click", () => { saveHist([]); renderHist(); toast("Verlauf geleert."); });
+  $("#btnHistClear").addEventListener("click", () => { saveHist([]); renderHist(); toast(t("toastHistCleared")); });
 
   /* ---------- Speichern / Laden ---------- */
   let saved;
@@ -1050,13 +1252,13 @@ body {
 
   /* ---------- Paste: Delimiter entfernen ---------- */
   texEl.addEventListener("paste", (e) => {
-    const t = (e.clipboardData || window.clipboardData).getData("text");
-    if (!t) return;
-    const stripped = stripDelims(t);
-    if (stripped !== t.trim()) {
+    const txt = (e.clipboardData || window.clipboardData).getData("text");
+    if (!txt) return;
+    const stripped = stripDelims(txt);
+    if (stripped !== txt.trim()) {
       e.preventDefault();
       insertAtCursor(stripped, true);
-      toast("Delimiter entfernt – LaTeX übernommen.");
+      toast(t("toastDelims"));
     }
   });
 
@@ -1088,7 +1290,7 @@ body {
       btnOcr.disabled = false;
       btnOcrClear.hidden = false;
       ocrResultEl.hidden = true;
-      setOcrStatus("Bild bereit – „Formel erkennen“ klicken.");
+      setOcrStatus(t("stImageReady"));
     } else {
       thumbEl.hidden = true; thumbEl.removeAttribute("src");
       thumbHintEl.hidden = false;
@@ -1101,27 +1303,6 @@ body {
   }
   btnOcrClear.addEventListener("click", () => setPendingImage(null));
 
-  async function runOcr() {
-    if (ocrBusy || !pendingImage) return;
-    ocrBusy = true;
-    btnOcr.disabled = true;
-    try {
-      const tex = await recognizeImage(pendingImage, false);
-      ocrResultEl.hidden = false;
-      ocrResultEl.textContent = tex;
-      insertAtCursor(tex, !texEl.value.trim());
-      setOcrStatus("✓ Erkannt und in den Editor übernommen – bitte kurz prüfen!");
-      toast("✓ Formel erkannt – bitte kurz gegen das Original prüfen.");
-    } catch (err) {
-      setOcrStatus("⚠ OCR fehlgeschlagen: " + (err && err.message ? err.message : err) +
-        " – Internet nötig (erster Download). Alternativ: OpenMathpix nutzen.", true);
-    } finally {
-      ocrBusy = false;
-      btnOcr.disabled = !pendingImage;
-    }
-  }
-  btnOcr.addEventListener("click", runOcr);
-
   // Screenshot aus Zwischenablage (ganzseitig)
   document.addEventListener("paste", (e) => {
     const items = e.clipboardData && e.clipboardData.items;
@@ -1129,7 +1310,7 @@ body {
     for (const it of items) {
       if (it.type && it.type.startsWith("image/")) {
         const f = it.getAsFile();
-        if (f) { e.preventDefault(); setPendingImage(f); toast("📸 Screenshot erkannt – Erkennung läuft …"); runOcr(); return; }
+        if (f) { e.preventDefault(); setPendingImage(f); toast(t("toastShot")); runOcr(); return; }
       }
     }
   });
@@ -1189,7 +1370,7 @@ body {
       const img = new Image();
       img.onload = () => {
         URL.revokeObjectURL(url);
-        if (!img.width || !img.height) { reject(new Error("Leeres Bild")); return; }
+        if (!img.width || !img.height) { reject(new Error(t("errEmptyImage"))); return; }
         const cw = padToSquare ? Math.max(img.width, img.height) : img.width;
         const ch = padToSquare ? Math.max(img.width, img.height) : img.height;
         const cv = document.createElement("canvas");
@@ -1211,7 +1392,7 @@ body {
         }
         resolve(out);
       };
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Bild konnte nicht gelesen werden")); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error(t("errImageRead"))); };
       img.src = url;
     });
   }
@@ -1227,12 +1408,12 @@ body {
 
   async function ensureOcrPipe() {
     if (ocrPipe) return ocrPipe;
-    setOcrStatus("Lade OCR-Bibliothek …");
+    setOcrStatus(t("stLib"));
     if (!tjsMod) {
       tjsMod = await import(TJS_CDN);
       tjsMod.env.allowLocalModels = false;
     }
-    setOcrStatus("Lade KI-Modell (einmalig ~250 MB, danach Browser-Cache) …");
+    setOcrStatus(t("stModel"));
     ocrBarEl.hidden = false;
     const files = new Map();
     const onProgress = (d) => {
@@ -1243,10 +1424,10 @@ body {
         const pct = T ? Math.round((L / T) * 100) : 0;
         ocrBarFill.style.width = Math.min(100, pct) + "%";
         const cur = Math.round(((d.loaded || 0) / d.total) * 100);
-        setOcrStatus("Lade KI-Modell (" + d.file.split("/").pop() + "): " + cur + " % · gesamt " + pct + " %");
+        setOcrStatus(fmt(t("stModelFile"), { file: d.file.split("/").pop(), pct: cur, tot: pct }));
       } else if (d && d.status === "ready") {
         ocrBarFill.style.width = "100%";
-        setOcrStatus("Modell bereit – Formel wird erkannt …");
+        setOcrStatus(t("stModelReady"));
       }
     };
     ocrPipe = await tjsMod.pipeline("image-to-text", OCR_MODEL, {
@@ -1261,20 +1442,39 @@ body {
     const pipe = await ensureOcrPipe();
     const cv = await prepareCanvas(file, padToSquare);
     const raw = canvasToRawGray(cv);
-    setOcrStatus("Formel wird erkannt … (auf der CPU kann das einige Sekunden dauern)");
+    setOcrStatus(t("stRecognising"));
     const out = await pipe(raw, { max_new_tokens: 640 });
     const text = out && out[0] && out[0].generated_text ? out[0].generated_text.trim() : "";
-    if (!text) throw new Error("Kein Text erkannt");
+    if (!text) throw new Error(t("errNoText"));
     return stripDelims(text);
   }
 
+  async function runOcr() {
+    if (ocrBusy || !pendingImage) return;
+    ocrBusy = true;
+    btnOcr.disabled = true;
+    try {
+      const tex = await recognizeImage(pendingImage, false);
+      ocrResultEl.hidden = false;
+      ocrResultEl.textContent = tex;
+      insertAtCursor(tex, !texEl.value.trim());
+      setOcrStatus(t("stDone"));
+      toast(t("toastRecognised"));
+    } catch (err) {
+      setOcrStatus(t("stFailPrefix") + (err && err.message ? err.message : err) + t("stFailSuffix"), true);
+    } finally {
+      ocrBusy = false;
+      btnOcr.disabled = !pendingImage;
+    }
+  }
+  btnOcr.addEventListener("click", runOcr);
+
   /* ---------- Start ---------- */
-  renderLib();
-  renderHist();
+  applyLang();
   render();
 
   window.AM = { S, render, sanitizeMml, renderToString, stripDelims, lib: LIB, insert: insertAtCursor,
-    pngBlob: copyPngBlob, recognize: recognizeImage, setPendingImage, prepareCanvas };
+    pngBlob: copyPngBlob, recognize: recognizeImage, setPendingImage, prepareCanvas, setLang: setLang, lang: () => LANG };
 })();
 </script>
 </body>

@@ -1,69 +1,74 @@
-# AutoMath – Formel-Werkstatt für PowerPoint
+# AutoMath – Formula Workshop for PowerPoint
 
-Für Tutorien in HM 1 (Elektrotechnik): **Screenshot einfügen (Strg+V) → KI liest die Formel (OCR) → Live-Vorschau → ein Klick kopieren → in PowerPoint als native, editierbare Formel einfügen.**
+🌍 **Deutsch?** → [README.de.md](README.de.md)
 
-## Schnellstart
+For tutoring in engineering mathematics (electrical engineering): **Paste a screenshot (`Ctrl+V`) → the AI reads the formula (OCR) → live preview → one click to copy → into PowerPoint as a native, editable equation.**
 
-1. `AutoMath.html` per Doppelklick öffnen (eine einzige Datei – Bibliothek und Schrift sind eingebettet).
-2. **Screenshot einfügen:** `Win + Shift + S` über die Formel im Skript → in AutoMath `Strg + V` – die Erkennung startet automatisch und übernimmt das LaTeX in den Editor (OCR mit TexTeller3, läuft im Browser; erstmalig ~250 MB Modell-Download, danach offline aus dem Cache). Alternativ LaTeX direkt tippen, z. B. `F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt`
-   - `$…$` / `$$…$$` beim Einfügen werden automatisch entfernt.
-   - Zeichen-Palette über dem Eingabefeld; Formelbibliothek (Grundlagen, Zeiger, Laplace, Fourier, DGL, Matrizen/Felder, Struktur) per Klick einfügbar.
-3. **„Für PowerPoint kopieren"** klicken (oder `Strg+Enter`).
-4. In PowerPoint `Strg+V` → es entsteht eine **echte Office-Formel** (editierbar, skaliert scharf, Cambria-Math-Look).
+## Quick start
 
-## Drei Wege nach PowerPoint
+1. Open `AutoMath.html` by double-clicking (a single file – library and fonts are embedded).
+2. **Paste a screenshot:** `Win + Shift + S` over the formula in your script → press `Ctrl + V` in AutoMath – recognition starts automatically and inserts the LaTeX into the editor (OCR with TexTeller3, runs in the browser; the first use downloads ~250 MB of model data, afterwards it works offline from the cache). Alternatively, type LaTeX directly, e.g. `F(s) = \int_{0}^{\infty} f(t)\,e^{-st}\,dt`
+   - `$…$` / `$$…$$` are stripped automatically when pasted.
+   - Symbol palette above the input field; formula library (fundamentals, phasors, Laplace, Fourier, ODEs, matrices/fields, structure) insertable with one click.
+3. Click **“Copy for PowerPoint”** (or `Ctrl+Enter`).
+4. In PowerPoint, press `Ctrl+V` → you get a **real Office equation** (editable, scales sharply, Cambria Math look).
 
-| Weg | Wie | Ergebnis |
+The interface starts in **English** and can be switched to **German** at any time using the EN/DE switch in the header – the choice is remembered.
+
+## Three ways into PowerPoint
+
+| Way | How | Result |
 |---|---|---|
-| 1 · MathML (Standard) | „Für PowerPoint kopieren" → `Strg+V` auf der Folie. Falls es als Text landet: *Start → Einfügen → Inhalte einfügen → MathML* | Native Formel, editierbar |
-| 2 · LaTeX direkt (M365 ab Build 2606/2026) | „LaTeX mit $$ … $$ kopieren" → auf der Folie einfügen; alternativ in PowerPoint `Alt+=` → Formel-Menüband auf **{}LaTeX** umstellen → Code einfügen → `Strg+Alt+=` | Native Formel, editierbar |
-| 3 · PNG (Fallback) | „PNG kopieren" oder „PNG herunterladen" (transparent, 3× Auflösung) | Bild, nicht editierbar |
+| 1 · MathML (default) | “Copy for PowerPoint” → `Ctrl+V` on the slide. If it lands as text: *Home → Paste → Paste Special → MathML* | Native equation, editable |
+| 2 · LaTeX directly (M365 from build 2606/2026) | “Copy LaTeX with $$ … $$” → paste on the slide; or in PowerPoint `Alt+=` → switch the Equation ribbon to **{}LaTeX** → paste the code → `Ctrl+Alt+=` (Convert) | Native equation, editable |
+| 3 · PNG (fallback) | “Copy PNG” or “Download PNG” (transparent, 3× resolution) | Image, not editable |
 
-Quellen zur Office-Unterstützung:
-- LaTeX-Unterstützung: <https://learn.microsoft.com/de-de/office/math/latex>
-- MathML-Import (elementgenau): <https://learn.microsoft.com/en-us/office/math/mathml>
+Sources on the Office support behind this:
+- LaTeX support: <https://learn.microsoft.com/en-us/office/math/latex>
+- MathML import (element by element): <https://learn.microsoft.com/en-us/office/math/mathml>
 - Announcement: <https://techcommunity.microsoft.com/blog/microsoft365insiderblog/from-latex-to-accessible-pdfs-transforming-math-workflows-in-microsoft-365/4523506>
 
-## Formeln aus Skript / Buch (OCR) — integriert!
+## Formulas from scripts / books (OCR) — built in!
 
-1. Screenshot der Formel kopieren (`Win + Shift + S` – „Rechteckiger Ausschnitt", Ergebnis ist automatisch in der Zwischenablage).
-2. In AutoMath `Strg + V` drücken (oder Bild in die Dropzone ziehen / Datei wählen).
-3. **„Formel erkennen"** klicken → die KI **TexTeller3** liest die Formel und übernimmt das LaTeX in den Editor.
-4. Kurz gegen das Original prüfen → **„Für PowerPoint kopieren"** → `Strg + V` auf der Folie.
+1. Copy a screenshot of the formula (`Win + Shift + S`, rectangular snip – the result is on your clipboard automatically).
+2. Press `Ctrl + V` in AutoMath (or drop the image / pick a file) – recognition starts by itself.
+3. The AI **TexTeller3** reads the formula and inserts the LaTeX into the editor.
+4. Double-check against the original → **“Copy for PowerPoint”** → `Ctrl+V` on the slide.
 
-- Die Erkennung läuft **lokal im Browser** (WebGPU/WASM). Beim ersten Mal wird das Modell (~250 MB, quantisiert) heruntergeladen und im Browser-Cache behalten – danach funktioniert OCR auch offline.
-- Für Handschrift oder schwierige Fälle: [OpenMathpix](https://github.com/JhuoW/OpenMathpix) (offline, gratis) – LaTeX landet in der Zwischenablage, einfach in AutoMath einfügen. Weitere Alternativen: [Mathpix Snip](https://mathpix.com) (Freemium), [mathcheap.xyz](https://mathcheap.xyz), [imagetolatex.com](https://imagetolatex.com).
+- Recognition runs **locally in the browser** (WebGPU/WASM). On first use the model (~250 MB, quantized) is downloaded and kept in the browser cache – afterwards OCR also works offline.
+- For handwriting or difficult cases: [OpenMathpix](https://github.com/JhuoW/OpenMathpix) (offline, free) – the LaTeX lands on your clipboard, simply paste it into AutoMath. Other alternatives: [Mathpix Snip](https://mathpix.com) (Freemium), [mathcheap.xyz](https://mathcheap.xyz), [imagetolatex.com](https://imagetolatex.com).
 
-## Verlauf & Speicherung
+## History & storage
 
-- Jede kopierte Formel landet im **Verlauf** (Klick lädt sie zurück, ✕ löscht).
-- Aktuelle Formel + Verlauf + OCR-Modell liegen lokal im Browser (`localStorage`/Cache) – Formelbilder verlassen den Rechner nicht.
+- Every copied formula lands in the **history** (click to reload, ✕ to delete).
+- The current formula, the history and the OCR model live in your browser (`localStorage`/cache) – formula images never leave your computer.
 
-## Projektstruktur
+## Project structure
 
 ```
 AutoMath/
-├── AutoMath.html              ← die fertige App (einzeln verteilen/nutzen)
-├── build.ps1                  ← baut AutoMath.html neu
-├── src/AutoMath.template.html ← Quellcode der App (Platzhalter für Temml)
-└── vendor/                    ← Temml 0.14 (MathML-Renderer) + Cambria-Math-CSS + Schrift
+├── AutoMath.html              ← the finished app (share/use standalone)
+├── build.ps1                  ← rebuilds AutoMath.html
+├── src/AutoMath.template.html ← app source (placeholders for Temml)
+└── vendor/                    ← Temml 0.14 (MathML renderer) + Cambria-Math CSS + font
 ```
 
-Nach Änderungen an `src/AutoMath.template.html`:
+After changing `src/AutoMath.template.html`:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-## Technik-Notizen
+## Technical notes
 
-- Rendering: [Temml](https://temml.org/) → Presentation MathML; Vorschau mit **Cambria Math** (= dieselbe Schrift wie PowerPoint-Formeln → WYSIWYG).
-- Die Kopier-Version des MathML wird automatisch bereinigt (xmlns gesichert, `display="block"` bei Anzeigeformel, CSS-Klassen/Styles entfernt) – exakt passend zum MathML-3-Import von Microsoft 365 (ab Version 2606/16.110; ältere Versionen unterstützen Teile davon).
-- PNG-Export: MathML → SVG(foreignObject) → Canvas, 3× skaliert, transparenter Hintergrund.
-- OCR: [TexTeller3](https://huggingface.co/onnx-community/TexTeller3-ONNX) (Apache-2.0, ViT-Encoder 448×448 + TrOCR-Decoder, q4-quantisiert) via [transformers.js](https://github.com/huggingface/transformers.js) im Browser. Die transformers.js-Bibliothek lädt einmalig vom CDN, das Modell von Hugging Face (beide im Browser-Cache).
+- Rendering: [Temml](https://temml.org/) → Presentation MathML; preview in **Cambria Math** (= the same font as PowerPoint equations → WYSIWYG).
+- The MathML copy version is cleaned automatically (xmlns ensured, `display="block"` in display mode, CSS classes/styles removed) – exactly matching Microsoft 365’s MathML 3 import (from version 2606/16.110; older versions support parts of it).
+- PNG export: MathML → SVG(foreignObject) → canvas, 3× scale, transparent background.
+- OCR: [TexTeller3](https://huggingface.co/onnx-community/TexTeller3-ONNX) (Apache-2.0, ViT encoder 448×448 + TrOCR decoder, q4-quantized) via [transformers.js](https://github.com/huggingface/transformers.js) in the browser. The transformers.js library loads from the CDN once, the model from Hugging Face (both kept in the browser cache). Screenshots are auto-cropped to the formula ink and converted to grayscale (1 channel) before inference.
+- Language: English (default) and German, switchable in the header, stored per browser.
 
-## Ideen für v3
+## Ideas for the future
 
-- Eigene Formelbibliothek erweitern/persistieren, Formel-`Merken`-Button.
-- Serien-Workflow: viele Screenshots nacheinander mit „Weiter"-Knopf.
-- Mehrzeilige Formeln & ganze Skript-Seiten erkennen.
+- Persistent, user-editable formula library; “pin formula” button.
+- Batch workflow: recognise many screenshots in a row with a “next” button.
+- Multi-line formulas and whole script pages.
