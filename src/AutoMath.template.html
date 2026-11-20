@@ -1110,7 +1110,7 @@
       const tex = await recognizeImage(pendingImage, true);
       ocrResultEl.hidden = false;
       ocrResultEl.textContent = tex;
-      insertAtCursor(tex, !texEl.value.trim());
+      insertAtCursor(tex, true); // neues Bild ersetzt den bisherigen Editor-Inhalt
       setOcrStatus(t("stDone"));
       toast(t("toastRecognised"));
     } catch (err) {
