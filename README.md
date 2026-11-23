@@ -44,10 +44,12 @@ Sources on the Office support behind this:
 - Recognition runs **locally in the browser** – on the GPU (WebGPU) when available, otherwise on the CPU. On first use the model (~200–250 MB, quantized) is downloaded and kept in the browser cache – afterwards OCR also works offline. Images are auto-cropped to the formula ink and padded to a square (aspect-preserving) before recognition.
 - For handwriting or difficult cases: [OpenMathpix](https://github.com/JhuoW/OpenMathpix) (offline, free) – the LaTeX lands on your clipboard, simply paste it into AutoMath. Other alternatives: [Mathpix Snip](https://mathpix.com) (Freemium), [mathcheap.xyz](https://mathcheap.xyz), [imagetolatex.com](https://imagetolatex.com).
 
-## History & storage
+## History, „My formulas" & storage
 
 - Every copied formula lands in the **history** (click to reload, ✕ to delete).
-- The current formula, the history and the OCR model live in your browser (`localStorage`/cache) – formula images never leave your computer.
+- **Pin formulas:** Click **“📌 Pin”** in the editor to save the current formula (optionally with a name) under **“My formulas”** at the top of the library – persisted in this browser, deletable with ✕.
+- The current formula, the history, pinned formulas and the OCR model live in your browser (`localStorage`/cache) – formula images never leave your computer.
+- **🧹 Clear cache** (in the OCR card) deletes the downloaded OCR model (~200 MB) from the browser cache – the next recognition downloads it again.
 
 ## Project structure
 

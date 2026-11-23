@@ -44,10 +44,12 @@ Quellen zur Office-Unterstützung:
 - Die Erkennung läuft **lokal im Browser** – auf der GPU (WebGPU), falls verfügbar, sonst auf der CPU. Beim ersten Mal wird das Modell (~200–250 MB, quantisiert) heruntergeladen und im Browser-Cache behalten – danach funktioniert OCR auch offline. Bilder werden vor der Erkennung automatisch auf den Formelinhalt zugeschnitten und seitenverhältnistreu auf ein Quadrat aufgefüllt.
 - Für Handschrift oder schwierige Fälle: [OpenMathpix](https://github.com/JhuoW/OpenMathpix) (offline, gratis) – das LaTeX landet in der Zwischenablage, einfach in AutoMath einfügen. Weitere Alternativen: [Mathpix Snip](https://mathpix.com) (Freemium), [mathcheap.xyz](https://mathcheap.xyz), [imagetolatex.com](https://imagetolatex.com).
 
-## Verlauf & Speicherung
+## Verlauf, „Meine Formeln" & Speicherung
 
 - Jede kopierte Formel landet im **Verlauf** (Klick lädt sie zurück, ✕ löscht).
-- Aktuelle Formel, Verlauf und OCR-Modell liegen lokal im Browser (`localStorage`/Cache) – Formelbilder verlassen den Rechner nicht.
+- **Formeln merken:** Mit **„📌 Merken"** im Editor die aktuelle Formel (optional mit Namen) unter **„Meine Formeln"** am Anfang der Bibliothek speichern – bleibt in diesem Browser gespeichert, per ✕ löschbar.
+- Aktuelle Formel, Verlauf, gemerkte Formeln und OCR-Modell liegen lokal im Browser (`localStorage`/Cache) – Formelbilder verlassen den Rechner nicht.
+- **🧹 Cache leeren** (in der OCR-Karte) löscht das heruntergeladene OCR-Modell (~200 MB) aus dem Browser-Cache – die nächste Erkennung lädt es erneut.
 
 ## Projektstruktur
 

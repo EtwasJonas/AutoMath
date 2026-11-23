@@ -232,6 +232,7 @@
       <div class="row" style="margin-top:0">
         <button id="btnOcr" disabled data-i18n="btnOcr">🔎&nbsp; Recognise formula</button>
         <button class="ghost" id="btnOcrClear" hidden data-i18n="btnOcrClear">Remove image</button>
+        <button class="ghost" id="btnCacheClear" data-i18n="btnCacheClear" data-i18n-title="btnCacheClearTip" title="Deletes the downloaded OCR model from the browser cache">🧹 Clear cache</button>
       </div>
       <div id="ocrStatus" class="ocrstatus" hidden></div>
       <div id="ocrBar" class="ocrbar" hidden><div id="ocrBarFill"></div></div>
@@ -276,6 +277,7 @@
       </span>
       <button class="ghost" id="btnDemo" data-i18n="btnDemo">Load example</button>
       <button class="ghost" id="btnClear" data-i18n="btnClear">Clear</button>
+      <button class="ghost" id="btnPin" data-i18n="btnPin" title="Save the current formula under “My formulas” in this browser">📌 Pin</button>
     </div>
   </section>
 </main>
@@ -412,6 +414,15 @@
       chipTip: "Insert: ",
       libTip: "Click: insert at the cursor position",
       errMathml: "No MathML produced",
+      btnPin: "📌 Pin",
+      pinPrompt: "Name for the formula (optional):",
+      pinDefault: "My formula",
+      toastPinned: "✓ Saved under “My formulas”.",
+      myEmpty: "Nothing pinned yet – type a formula and click “Pin”.",
+      btnCacheClear: "🧹 Clear cache",
+      btnCacheClearTip: "Deletes the downloaded OCR model from the browser cache",
+      toastCacheCleared: "OCR model cache cleared – it will be re-downloaded on the next recognition (~200 MB).",
+      toastCacheEmpty: "No OCR cache found.",
     },
     de: {
       docTitle: "AutoMath – Formel-Werkstatt für PowerPoint",
@@ -492,6 +503,15 @@
       chipTip: "Einfügen: ",
       libTip: "Klick: an der Cursorposition einfügen",
       errMathml: "Kein MathML erzeugt",
+      btnPin: "📌 Merken",
+      pinPrompt: "Name für die Formel (optional):",
+      pinDefault: "Eigene Formel",
+      toastPinned: "✓ Unter „Meine Formeln“ gespeichert.",
+      myEmpty: "Noch nichts gemerkt – Formel eingeben und „Merken“ klicken.",
+      btnCacheClear: "🧹 Cache leeren",
+      btnCacheClearTip: "Löscht das heruntergeladene OCR-Modell aus dem Browser-Cache",
+      toastCacheCleared: "OCR-Modell-Cache gelöscht – wird beim nächsten Erkennen neu geladen (~200 MB).",
+      toastCacheEmpty: "Kein OCR-Cache gefunden.",
     },
   };
   let LANG = "en";
@@ -670,6 +690,18 @@
   $("#btnClear").addEventListener("click", () => {
     texEl.value = ""; render(); saveCurrent(); texEl.focus();
   });
+  $("#btnPin").addEventListener("click", () => {
+    if (!S.tex) return toast(t("needFormula"), false);
+    const name = window.prompt(t("pinPrompt"), "");
+    if (name === null) return; // abgebrochen
+    const my = loadMyLib().filter((x) => x.tex !== S.tex);
+    my.unshift({ tex: S.tex, name: name.trim(), display: S.display, ts: Date.now() });
+    if (my.length > 60) my.length = 60;
+    saveMyLib(my);
+    activeTab = 0;
+    renderLib();
+    toast(t("toastPinned"));
+  });
 
   /* ---------- Einfügen ---------- */
   function insertAtCursor(text, replaceAll) {
@@ -784,10 +816,16 @@
 
   let activeTab = 0;
   const libTabs = $("#libTabs"), libGrid = $("#libGrid");
+  function allGroups() {
+    const my = loadMyLib().map((x) => [x.name || t("pinDefault"), x.name || "My formula", x.tex]);
+    return [{ tab: ["Meine Formeln", "My formulas"], items: my, mine: true }, ...LIB];
+  }
   function renderLib() {
     const li = LANG === "de" ? 0 : 1;
+    const groups = allGroups();
+    if (activeTab >= groups.length) activeTab = 0;
     libTabs.innerHTML = "";
-    LIB.forEach((g, i) => {
+    groups.forEach((g, i) => {
       const b = document.createElement("button");
       b.textContent = g.tab[li];
       b.className = i === activeTab ? "on" : "";
@@ -795,7 +833,15 @@
       libTabs.appendChild(b);
     });
     libGrid.innerHTML = "";
-    LIB[activeTab].items.forEach((item) => {
+    const g = groups[activeTab];
+    if (!g.items.length) {
+      const hint = document.createElement("div");
+      hint.style.cssText = "color:#9ca3af;font-size:13px;padding:6px";
+      hint.textContent = t("myEmpty");
+      libGrid.appendChild(hint);
+      return;
+    }
+    g.items.forEach((item, idx) => {
       const name = item[li], tex = item[2];
       const d = document.createElement("div");
       d.className = "libitem";
@@ -807,13 +853,30 @@
       n.className = "n";
       n.textContent = name;
       d.appendChild(m); d.appendChild(n);
+      if (g.mine) {
+        const del = document.createElement("button");
+        del.className = "del";
+        del.textContent = "✕";
+        del.title = t("histDelTip");
+        del.style.cssText = "border:0;background:none;color:#9ca3af;cursor:pointer;font-size:14px";
+        del.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const my = loadMyLib();
+          my.splice(idx, 1);
+          saveMyLib(my);
+          renderLib();
+        });
+        d.appendChild(del);
+      }
       d.addEventListener("click", () => insertAtCursor(tex, false));
       libGrid.appendChild(d);
     });
   }
 
   /* ---------- Verlauf ---------- */
-  const HKEY = "automath.history", CKEY = "automath.current";
+  const HKEY = "automath.history", CKEY = "automath.current", MYKEY = "automath.mylib";
+  function loadMyLib() { try { return JSON.parse(localStorage.getItem(MYKEY) || "[]"); } catch (e) { return []; } }
+  function saveMyLib(h) { try { localStorage.setItem(MYKEY, JSON.stringify(h)); } catch (e) {} }
   function loadHist() { try { return JSON.parse(localStorage.getItem(HKEY) || "[]"); } catch (e) { return []; } }
   function saveHist(h) { try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch (e) {} }
   function addHistory(tex, display) {
@@ -931,6 +994,20 @@
     }
   }
   btnOcrClear.addEventListener("click", () => setPendingImage(null));
+
+  // Heruntergeladenes OCR-Modell aus dem Browser-Cache entfernen
+  $("#btnCacheClear").addEventListener("click", async () => {
+    let deleted = 0;
+    try {
+      const keys = await caches.keys();
+      for (const k of keys) {
+        if (/transformers/i.test(k)) { await caches.delete(k); deleted++; }
+      }
+    } catch (e) {}
+    ocrPipe = null;   // nächste Erkennung lädt Bibliothek + Modell neu
+    tjsMod = null;
+    toast(deleted ? t("toastCacheCleared") : t("toastCacheEmpty"));
+  });
 
   // Screenshot aus Zwischenablage (ganzseitig)
   document.addEventListener("paste", (e) => {
