@@ -413,6 +413,7 @@
       errPngCreate: "PNG creation failed",
       chipTip: "Insert: ",
       libTip: "Click: insert at the cursor position",
+      libTipLoad: "Click: load formula (replaces the editor content)",
       errMathml: "No MathML produced",
       btnPin: "📌 Pin",
       pinPrompt: "Name for the formula (optional):",
@@ -502,6 +503,7 @@
       errPngCreate: "PNG-Erzeugung fehlgeschlagen",
       chipTip: "Einfügen: ",
       libTip: "Klick: an der Cursorposition einfügen",
+      libTipLoad: "Klick: Formel laden (ersetzt den Editor-Inhalt)",
       errMathml: "Kein MathML erzeugt",
       btnPin: "📌 Merken",
       pinPrompt: "Name für die Formel (optional):",
@@ -845,7 +847,7 @@
       const name = item[li], tex = item[2];
       const d = document.createElement("div");
       d.className = "libitem";
-      d.title = tex + "\n\n" + t("libTip");
+      d.title = tex + "\n\n" + t("libTipLoad");
       const m = document.createElement("div");
       m.className = "m";
       try { m.innerHTML = renderToString(tex, false); } catch (e) { m.textContent = tex; }
@@ -868,7 +870,7 @@
         });
         d.appendChild(del);
       }
-      d.addEventListener("click", () => insertAtCursor(tex, false));
+      d.addEventListener("click", () => insertAtCursor(tex, true));
       libGrid.appendChild(d);
     });
   }
