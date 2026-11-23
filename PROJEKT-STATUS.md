@@ -32,7 +32,7 @@ Zweisprachig (Englisch = Basis, DE/EN-Schalter im Header, Wahl wird gespeichert)
 - **Test-Setup:** `py -3 -m http.server 8765 --bind 127.0.0.1` im Projektordner (Hintergrund), dann OpenCode-Browser-Tools auf `http://127.0.0.1:8765/AutoMath.html` (`file://` wird vom In-App-Browser nicht akzeptiert). Geschlossener OCR-Testlauf: Formel `AM.insert(tex, true)` → `AM.pngBlob()` → `AM.recognize(blob, true)`.
 - **Storage-Orte:** OCR-Modell liegt im Cache-Storage unter Name **`transformers-cache`** (Cache API, kein IndexedDB/OPFS). localStorage: `automath.current`, `automath.history`, `automath.mylib`, `automath.lang`.
 - **Automationshinweis:** `window.prompt` wird im In-App-Browser automatisch verworfen → zum Testen von „Merken" `window.prompt = () => "Name"` stubben, bevor `#btnPin` geklickt wird.
-- **GitHub:** Repo `EtwasJonas/AutoMath`, `gh` CLI ist authentifiziert (Konto EtwasJonas). Pages = Branch `main`, Root, URL https://etwasjonas.github.io/AutoMath/. Build-Status: `gh api repos/EtwasJonas/AutoMath/pages/builds/latest --jq .status`.
+- **GitHub:** Repo `EtwasJonas/AutoMath`, `gh` CLI ist authentifiziert (Konto EtwasJonas). Pages = Branch `main`, Root, URL https://etwasjonas.github.io/AutoMath/. Build-Status: `gh api repos/EtwasJonas/AutoMath/pages/builds/latest --jq .status`. **Repo-Description auf GitHub: Englisch** („Formula workshop for PowerPoint: paste a screenshot, get LaTeX via in-browser AI OCR, copy it as a native editable PowerPoint equation. One single HTML file, bilingual (EN/DE).").
 - **Git-Historie (Meilensteine):** `e76d402` v2 (OCR integriert) → `11ee30a` v3 (bilingual, Layout) → `8733253` Pages + Vorschau über Eingabe → `e0b30ec` OCR-Fix (Quadrat-Padding, WebGPU-first) → `1f5f527` Segmentierungs-Versuch → `1617dcb` **Revert davon** → `c357b18` Replace-Verhalten behalten.
 
 ## 4. Bekannte Grenzen & offene Punkte
@@ -43,4 +43,4 @@ Zweisprachig (Englisch = Basis, DE/EN-Schalter im Header, Wahl wird gespeichert)
 
 ## 5. Was in der letzten Sitzung passierte
 
-23.11.2026 (3. Teil): Bibliotheks-Verhalten geändert auf Nutzerwunsch: **Klick auf einen Bibliothekseintrag (inkl. „Meine Formeln") lädt die Formel und ersetzt den Editor-Inhalt** (vorher: Einfügen an Cursorposition). Zeichen-Palette bleibt Cursor-Einfügen. Getestet (Alt-Inhalt ersetzt, Tooltip aktualisiert, beide Sprachen). Doku/Status aktualisiert.
+23.11.2026 (4. Teil): GitHub-Repo-Beschreibung von Deutsch auf **Englisch** umgestellt (`gh repo edit`): *„Formula workshop for PowerPoint: paste a screenshot, get LaTeX via in-browser AI OCR, copy it as a native editable PowerPoint equation. One single HTML file, bilingual (EN/DE)."* Kein Code, kein Build.
