@@ -3,7 +3,7 @@
 > **Für KI-Sitzungen:** Diese Datei wird nach jeder Sitzung aktualisiert. Lies sie zuerst,
 > dann kennst du den kompletten Stand ohne Rückfragen. Ändere sie am Sitzungsende.
 
-**Stand: 23.11.2026** · Version v3 · Repo: https://github.com/EtwasJonas/AutoMath · Live: https://etwasjonas.github.io/AutoMath/
+**Stand: 28.11.2026** · Version v3 · Repo: https://github.com/EtwasJonas/AutoMath · Live: https://etwasjonas.github.io/AutoMath/
 
 ## 1. Was ist das Projekt?
 
@@ -27,7 +27,7 @@ Zweisprachig (Englisch = Basis, DE/EN-Schalter im Header, Wahl wird gespeichert)
 - **OCR-Pipeline-Details:**
   - TexTeller3 erwartet **Graustufen (1 Kanal)** – RGBA führt zu Fehler → `canvasToRawGray()` baut `RawImage` selbst.
   - CPU-Inferenz blockiert den Hauptthread (GitHub Pages kann keine COOP/COEP-Header → kein threaded WASM). **WebGPU** löst das; im OpenCode-In-App-Browser ist `navigator.gpu` = false (nur zum Testen relevant!).
-  - `max_new_tokens: 512` (Cap gegen Endlos-Müll).
+  - Generierung (seit 28.11.2026): `max_new_tokens: 256`, `repetition_penalty: 1.2`, `no_repeat_ngram_size: 3` – stoppt die bekannte Repetitions-Endlosschleife von TexTeller (gibt sonst bei manchen Eingaben nie `</s>` aus und spult bis zum Token-Cap `\lim\lim\lim\Gamma\Gamma…` ab → Müll + lange Laufzeit).
   - Test-Hooks: `window.AM` = `{ S, render, sanitizeMml, renderToString, stripDelims, lib, insert, pngBlob, recognize, setPendingImage, prepareCanvas, setLang, lang, ocrDevice }`.
 - **Test-Setup:** `py -3 -m http.server 8765 --bind 127.0.0.1` im Projektordner (Hintergrund), dann OpenCode-Browser-Tools auf `http://127.0.0.1:8765/AutoMath.html` (`file://` wird vom In-App-Browser nicht akzeptiert). Geschlossener OCR-Testlauf: Formel `AM.insert(tex, true)` → `AM.pngBlob()` → `AM.recognize(blob, true)`.
 - **Storage-Orte:** OCR-Modell liegt im Cache-Storage unter Name **`transformers-cache`** (Cache API, kein IndexedDB/OPFS). localStorage: `automath.current`, `automath.history`, `automath.mylib`, `automath.lang`.
@@ -42,5 +42,7 @@ Zweisprachig (Englisch = Basis, DE/EN-Schalter im Header, Wahl wird gespeichert)
 - Kleinkram: `\binom` wird als `\begin{matrix} n \\ k \end{matrix}` erkannt (mathematisch identisch); gelegentlich `\boldsymbol`-Rauschen oder „..."-Enden (Nutzer prüft eh – Hinweis steht im Tool).
 
 ## 5. Was in der letzten Sitzung passierte
+
+28.11.2026 (5. Teil): **OCR-Endlosschleife gefixt.** Nutzer-Bugreport: Screenshot (lim-Formel) ergab Minuten-Garbage (`\lim\lim\lim…`, `\Gamma\Gamma…`, `\phantom{ccc…}`). Ursache: TexTeller gibt bei manchen Eingaben nie `</s>` aus und wiederholt Tokens bis `max_new_tokens`. Fix in `recognizeImage` (`src/AutoMath.template.html`): `max_new_tokens: 512→256`, neu `repetition_penalty: 1.2`, `no_repeat_ngram_size: 3`. Gebaut, im In-App-Browser getestet (WebGPU **und** WASM): erstes OCR nach Fix liefert kurzes deterministisches Ergebnis statt Endlos-Müll; sauber gerenderte Formel `\lim_{n\to\infty} a_n = a` wird per Closed-Loop-Test (`AM.insert` → `AM.pngBlob()` → `AM.recognize`) korrekt erkannt (~5,7 s WebGPU). **Der Bugreport-Screenshot wird von beiden Backends deterministisch als `\vdots` erkannt → Eingabebild ist erkennbar komplexer/anders als die beschriebene Formel (Pixelanalyse: langer Bruchstrich, hoher Stamm, Σ-ähnliches Symbol), kein Pipeline-Fehler.** Bekannte Kosmetik unverändert: gelegentlich `\mbox{\boldmath$x$}` / `\mbox{\large…`-Rauschen im Ergebnis.
 
 23.11.2026 (4. Teil): GitHub-Repo-Beschreibung von Deutsch auf **Englisch** umgestellt (`gh repo edit`): *„Formula workshop for PowerPoint: paste a screenshot, get LaTeX via in-browser AI OCR, copy it as a native editable PowerPoint equation. One single HTML file, bilingual (EN/DE)."* Kein Code, kein Build.

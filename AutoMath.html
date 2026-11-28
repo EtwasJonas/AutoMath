@@ -1544,7 +1544,15 @@ body {
     const cv = await prepareCanvas(file, padToSquare);
     const raw = canvasToRawGray(cv);
     setOcrStatus(t("stRecognising"));
-    const out = await pipe(raw, Object.assign({ max_new_tokens: 512 }, genOpts || {}));
+    // Repetitionsschutz: TexTeller fällt bei manchen Eingaben in eine Endlosschleife
+    // (gibt nie </s> aus, wiederholt Tokens: \lim\lim\lim\Gamma\Gamma...). no_repeat_ngram_size
+    // bricht solch einen Loop ab, repetition_penalty senkt die Neigung dazu; das kleinere
+    // max_new_tokens begrenzt die Laufzeit im Fehlerfall (Formeln: selten >200 Tokens).
+    const out = await pipe(raw, Object.assign({
+      max_new_tokens: 256,
+      repetition_penalty: 1.2,
+      no_repeat_ngram_size: 3
+    }, genOpts || {}));
     let text = out && out[0] && out[0].generated_text ? out[0].generated_text.trim() : "";
     if (!text) throw new Error(t("errNoText"));
     text = text.replace(/(?:\s*\.\.\.)+\s*$/, ""); // "..."-Halluzinationen am Ende entfernen
